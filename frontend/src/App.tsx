@@ -1,51 +1,45 @@
-import { useEffect } from "react"; // Para inicializar MiniKit al cargar
-import { MiniKit, VerifyCommandInput, VerifyCommandResponse } from "@worldcoin/minikit-js";
+import { useEffect } from "react";
+import { MiniKit, WalletAuthInput } from "@worldcoin/minikit-js";
 
 function App() {
-    // Inicializa MiniKit cuando el componente se monta
+    // Inicializa MiniKit al cargar la app
     useEffect(() => {
-        MiniKit.install(); // Instala MiniKit en el entorno
+        MiniKit.install();
     }, []);
 
-    const handleVerifyIdentity = () => {
-        // Verifica si MiniKit está instalado
+    const handleHelloWorld = () => {
         if (!MiniKit.isInstalled()) {
-            console.log("MiniKit no está instalado. Por favor, ejecuta esta app dentro de World App.");
-            window.alert("Abre esta aplicación en World App para verificar tu identidad.");
+            console.log("MiniKit no está instalado. Abre esta app en World App.");
+            window.alert("Por favor, abre esta aplicación en World App.");
             return;
         }
 
-        // Configura el payload para el comando verify
-        const payload: VerifyCommandInput = {
-            verification_level: "device" as const, // Puede ser "device" o "orb"
+        // Configura el payload para walletAuth
+        const payload: WalletAuthInput = {
+            nonce: "hello-world-" + Date.now(), // Nonce único
         };
 
-        // Ejecuta el comando verify
-        const response: VerifyCommandResponse | null = MiniKit.commands.verify(payload);
+        // Usamos any para evitar problemas de tipado
+        const response: any = MiniKit.commands.walletAuth(payload);
+        console.log("Respuesta de MiniKit:", response);
 
-        // Maneja la respuesta
         if (response) {
-            console.log("Respuesta de verificación:", response);
-            if (response.success) {
-                window.alert("Identidad verificada exitosamente!");
-            } else {
-                window.alert("Fallo en la verificación: " + (response.reason || "Error desconocido"));
-            }
+            // Si response no es null, asumimos éxito
+            window.alert("¡Hola Mundo desde MiniKit! Respuesta: " + JSON.stringify(response));
         } else {
-            console.log("No se recibió respuesta del comando verify.");
-            window.alert("No se pudo verificar la identidad. Asegúrate de estar en World App.");
+            window.alert("Error al ejecutar Hola Mundo. Autenticación fallida.");
         }
     };
 
     return (
         <div style={{ padding: "20px", textAlign: "center" }}>
-            <h1>Verificación de Identidad</h1>
-            <p>Haz clic para verificar tu identidad con World App</p>
+            <h1>Hola Mundo con MiniKit</h1>
+            <p>Haz clic para saludar usando World App</p>
             <button
-                onClick={handleVerifyIdentity}
+                onClick={handleHelloWorld}
                 style={{ padding: "10px 20px", fontSize: "16px" }}
             >
-                Verificar Identidad
+                Decir Hola
             </button>
         </div>
     );
