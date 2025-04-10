@@ -1,21 +1,54 @@
-import { PayBlock } from "./components/Pay";
-import { VerifyBlock } from "./components/Verify";
+import { useEffect } from "react"; // Para inicializar MiniKit al cargar
+import { MiniKit, VerifyCommandInput, VerifyCommandResponse } from "@worldcoin/minikit-js";
 
-export default function App() {
-  
-  const handleClick = () => {
-    console.log("Respuesta de verify: sape");
-};
+function App() {
+    // Inicializa MiniKit cuando el componente se monta
+    useEffect(() => {
+        MiniKit.install(); // Instala MiniKit en el entorno
+    }, []);
 
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 gap-y-3">
-      <VerifyBlock />
-      <PayBlock />
-      <div>
-            <h1>Mi MiniApp 2</h1>
-            <button onClick={handleClick}>Probar MiniKit</button>
+    const handleVerifyIdentity = () => {
+        // Verifica si MiniKit está instalado
+        if (!MiniKit.isInstalled()) {
+            console.log("MiniKit no está instalado. Por favor, ejecuta esta app dentro de World App.");
+            window.alert("Abre esta aplicación en World App para verificar tu identidad.");
+            return;
+        }
+
+        // Configura el payload para el comando verify
+        const payload: VerifyCommandInput = {
+            verification_level: "device" as const, // Puede ser "device" o "orb"
+        };
+
+        // Ejecuta el comando verify
+        const response: VerifyCommandResponse | null = MiniKit.commands.verify(payload);
+
+        // Maneja la respuesta
+        if (response) {
+            console.log("Respuesta de verificación:", response);
+            if (response.success) {
+                window.alert("Identidad verificada exitosamente!");
+            } else {
+                window.alert("Fallo en la verificación: " + (response.reason || "Error desconocido"));
+            }
+        } else {
+            console.log("No se recibió respuesta del comando verify.");
+            window.alert("No se pudo verificar la identidad. Asegúrate de estar en World App.");
+        }
+    };
+
+    return (
+        <div style={{ padding: "20px", textAlign: "center" }}>
+            <h1>Verificación de Identidad</h1>
+            <p>Haz clic para verificar tu identidad con World App</p>
+            <button
+                onClick={handleVerifyIdentity}
+                style={{ padding: "10px 20px", fontSize: "16px" }}
+            >
+                Verificar Identidad
+            </button>
         </div>
-    </main>
-  );
+    );
 }
 
+export default App;
