@@ -28,9 +28,17 @@ export default async function RootLayout({
   const session = await auth();
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} `}>
-        <ClientProviders session={session}>{children}</ClientProviders>
+
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <ClientProviders session={session}>
+        <header className="p-4 bg-black text-white text-center">
+          <h1 className="text-xl font-bold">wKingw</h1>
+        </header>
+        <main className="p-4">{children}</main>
+        <footer className="p-4 text-center text-sm text-gray-500">© 2025 - Powered by SAPE</footer>
+        </ClientProviders>
       </body>
+
     </html>
   );
 }
