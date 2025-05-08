@@ -14,20 +14,15 @@ export const AuthButton = () => {
   const { isInstalled } = useMiniKit();
 
   const onClick = useCallback(async () => {
-    if (!isInstalled || isPending) {
-      return;
-    }
     setIsPending(true);
     try {
-      await walletAuth();
+      await walletAuth(); // Siempre intenta loguear
     } catch (error) {
       console.error('Wallet authentication button error', error);
+    } finally {
       setIsPending(false);
-      return;
     }
-
-    setIsPending(false);
-  }, [isInstalled, isPending]);
+  }, []);
 
   useEffect(() => {
     const authenticate = async () => {
