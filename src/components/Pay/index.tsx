@@ -14,8 +14,9 @@ export const Pay = () => {
   >(undefined);
 
   const onClickPay = async () => {
+
     // Lets use Alex's username to pay!
-    const address = (await MiniKit.getUserByUsername('alex')).walletAddress;
+    const address = '0xcc3651131c8262720332507ae1a4c370904d8614';
     setButtonState('pending');
 
     const res = await fetch('/api/initiate-payment', {
@@ -24,19 +25,15 @@ export const Pay = () => {
     const { id } = await res.json();
 
     const result = await MiniKit.commandsAsync.pay({
-      reference: id,
-      to: address ?? '0x0000000000000000000000000000000000000000',
+      reference: id, 
+      to: address,
       tokens: [
         {
           symbol: Tokens.WLD,
           token_amount: tokenToDecimals(0.005, Tokens.WLD).toString(),
-        },
-        {
-          symbol: Tokens.USDCE,
-          token_amount: tokenToDecimals(0.1, Tokens.USDCE).toString(),
-        },
+        }
       ],
-      description: 'Test example payment for minikit',
+      description: 'Mandale verguita',
     });
 
     console.log(result.finalPayload);
