@@ -3,6 +3,7 @@ import ClientProviders from '@/providers';
 import '@worldcoin/mini-apps-ui-kit-react/styles.css';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { redirect } from 'next/navigation';
 import './globals.css';
 
 const geistSans = Geist({
@@ -26,19 +27,20 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
+
+  // 🔐 Redirige al login si no hay sesión
+  if (!session) {
+    redirect('/');
+  }
+
   return (
     <html lang="en">
-      
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ClientProviders session={session}>
-        <header className="p-4 bg-black text-white text-center">
-          <h1 className="text-xl font-bold">wKingw</h1>
-        </header>
-        <main className="p-4">{children}</main>
-        <footer className="p-4 text-center text-sm text-gray-500">© 2025 - Powered by SAPE</footer>
+          <main className="p-4">{children}</main>
+          <footer className="p-4 text-center text-sm text-gray-500">© 2025 - Powered by Diego Randal</footer>
         </ClientProviders>
       </body>
-
     </html>
   );
 }

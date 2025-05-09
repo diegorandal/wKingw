@@ -3,6 +3,7 @@ import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { UserInfo } from '@/components/UserInfo';
 import { Pay } from '@/components/Pay';
+import { Verify } from '@/components/Verify';
 
 export default async function Home() {
   const session = await auth();
@@ -16,6 +17,7 @@ export default async function Home() {
       <Page.Main className="flex flex-col items-center justify-center">
         <UserInfo />
         <Pay />
+        <Verify />
       </Page.Main>
     </Page>
   );
