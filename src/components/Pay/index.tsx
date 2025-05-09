@@ -30,7 +30,7 @@ export const Pay = () => {
       tokens: [
         {
           symbol: Tokens.WLD,
-          token_amount: tokenToDecimals(0.005, Tokens.WLD).toString(),
+          token_amount: tokenToDecimals(0.1, Tokens.WLD).toString(),
         }
       ],
       description: 'Mandale verguita',
