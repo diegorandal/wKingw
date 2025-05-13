@@ -64,7 +64,7 @@ export const Pay = () => {
           variant="primary"
           className="w-full"
         >
-          Pay
+          Desafiar
         </Button>
       </LiveFeedback>
     </div>
