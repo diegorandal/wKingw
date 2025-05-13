@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation';
 import { UserInfo } from '@/components/UserInfo';
 import { Pay } from '@/components/Pay';
 import { Verify } from '@/components/Verify';
+import { AttackButton } from '@/components/AttackButton';
+import { DefenseButton } from '@/components/DefenseButton';
 
 export default async function Home() {
   const session = await auth();
@@ -15,9 +17,9 @@ export default async function Home() {
   return (
     <Page>
       <Page.Main className="flex flex-col items-center justify-center">
-        <UserInfo />
+        <AttackButton />
+        <DefenseButton />
         <Pay />
-        <Verify />
       </Page.Main>
     </Page>
   );
@@ -31,6 +33,7 @@ export default function Home() {
   return (
     <Page>
       <Page.Main className="flex flex-col items-center justify-center">
+        <UserInfo />
         <AuthButton />
       </Page.Main>
     </Page>

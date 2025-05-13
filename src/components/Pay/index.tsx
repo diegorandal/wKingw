@@ -3,11 +3,6 @@ import { Button, LiveFeedback } from '@worldcoin/mini-apps-ui-kit-react';
 import { MiniKit, Tokens, tokenToDecimals } from '@worldcoin/minikit-js';
 import { useState } from 'react';
 
-/**
- * This component is used to pay a user
- * The payment command simply does an ERC20 transfer
- * But, it also includes a reference field that you can search for on-chain
- */
 export const Pay = () => {
   const [buttonState, setButtonState] = useState<
     'pending' | 'success' | 'failed' | undefined
@@ -15,10 +10,10 @@ export const Pay = () => {
 
   const onClickPay = async () => {
 
-    // Lets use Alex's username to pay!
+    // Cuenta privada de la wallet de prueba
     const address = '0xcc3651131c8262720332507ae1a4c370904d8614';
     setButtonState('pending');
-
+    
     const res = await fetch('/api/initiate-payment', {
       method: 'POST',
     });
@@ -52,7 +47,7 @@ export const Pay = () => {
 
   return (
     <div className="grid w-full gap-4">
-      <p className="text-lg font-semibold">Pay</p>
+      <p className="text-lg font-semibold">Desafiar</p>
       <LiveFeedback
         label={{
           failed: 'Payment failed',
