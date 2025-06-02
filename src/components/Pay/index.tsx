@@ -1,7 +1,8 @@
 'use client';
 import { Button, LiveFeedback } from '@worldcoin/mini-apps-ui-kit-react';
-import { MiniKit, Tokens, tokenToDecimals } from '@worldcoin/minikit-js';
+import { MiniKit } from '@worldcoin/minikit-js';
 import { useState } from 'react';
+import TestContractABI from '@/abi/TestContract.json';
 
 export const Pay = () => {
   const [buttonState, setButtonState] = useState<
@@ -9,35 +10,37 @@ export const Pay = () => {
   >(undefined);
 
   const onClickPay = async () => {
-
     // Cuenta privada de la wallet de prueba
     const address = '0xcc3651131c8262720332507ae1a4c370904d8614';
     setButtonState('pending');
-    
-    const res = await fetch('/api/initiate-payment', {
-      method: 'POST',
-    });
-    const { id } = await res.json();
 
-    const result = await MiniKit.commandsAsync.pay({
-      reference: id, 
-      to: address,
-      tokens: [
-        {
-          symbol: Tokens.WLD,
-          token_amount: tokenToDecimals(0.1, Tokens.WLD).toString(),
-        }
-      ],
-      description: 'Mandale verguita',
-    });
+    // ORO token contract address and decimals
+    const oroAddress = '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63';
+    const oroDecimals = 18;
+    const oroAmount = (0.1 * 10 ** oroDecimals).toString();
 
-    console.log(result.finalPayload);
-    if (result.finalPayload.status === 'success') {
-      setButtonState('success');
-      // It's important to actually check the transaction result on-chain
-      // You should confirm the reference id matches for security
-      // Read more here: https://docs.world.org/mini-apps/commands/pay#verifying-the-payment
-    } else {
+    try {
+      const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
+        transaction: [
+          {
+            address: oroAddress,
+            abi: TestContractABI,
+            functionName: 'transfer',
+            args: [address, oroAmount],
+          },
+        ],
+      });
+
+      console.log(finalPayload);
+      if (finalPayload.status === 'success') {
+        setButtonState('success');
+      } else {
+        setButtonState('failed');
+        setTimeout(() => {
+          setButtonState(undefined);
+        }, 3000);
+      }
+    } catch (err) {
       setButtonState('failed');
       setTimeout(() => {
         setButtonState(undefined);
