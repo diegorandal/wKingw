@@ -2,7 +2,20 @@
 import { Button, LiveFeedback } from '@worldcoin/mini-apps-ui-kit-react';
 import { MiniKit } from '@worldcoin/minikit-js';
 import { useState } from 'react';
-import TestContractABI from '@/abi/TestContract.json';
+
+// ABI estándar ERC-20 solo con la función transfer
+const ERC20_ABI = [
+  {
+    constant: false,
+    inputs: [
+      { name: 'to', type: 'address' },
+      { name: 'amount', type: 'uint256' },
+    ],
+    name: 'transfer',
+    outputs: [{ name: '', type: 'bool' }],
+    type: 'function',
+  },
+];
 
 export const Pay = () => {
   const [buttonState, setButtonState] = useState<
@@ -24,7 +37,7 @@ export const Pay = () => {
         transaction: [
           {
             address: oroAddress,
-            abi: TestContractABI,
+            abi: ERC20_ABI,
             functionName: 'transfer',
             args: [address, oroAmount],
           },
