@@ -29,7 +29,8 @@ export const Pay = () => {
     setButtonState('pending');
 
     // ORO token contract address and decimals
-    const oroAddress = '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63';
+    //const oroAddress = '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63';
+    const oroAddress = '0xc3eb2622190c57429aac3901808994443b64b466';
     const oroDecimals = 18;
     const oroAmount = parseEther('0.1');
 
