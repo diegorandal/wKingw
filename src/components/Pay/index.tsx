@@ -2,6 +2,7 @@
 import { Button, LiveFeedback } from '@worldcoin/mini-apps-ui-kit-react';
 import { MiniKit } from '@worldcoin/minikit-js';
 import { useState } from 'react';
+import { erc20Abi, parseEther } from 'viem';
 
 // ABI estándar ERC-20 solo con la función transfer
 const ERC20_ABI = [
@@ -30,14 +31,14 @@ export const Pay = () => {
     // ORO token contract address and decimals
     const oroAddress = '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63';
     const oroDecimals = 18;
-    const oroAmount = (0.1 * 10 ** oroDecimals).toString();
+    const oroAmount = parseEther('0.1');
 
     try {
       const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
         transaction: [
           {
             address: oroAddress,
-            abi: ERC20_ABI,
+            abi: erc20Abi,
             functionName: 'transfer',
             args: [address, oroAmount],
           },
