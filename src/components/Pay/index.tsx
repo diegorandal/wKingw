@@ -25,7 +25,7 @@ export const Pay = () => {
 
   const onClickPay = async () => {
     // Cuenta privada de la wallet de prueba
-    const address = '0xcc3651131c8262720332507ae1a4c370904d8614';
+    const address = '0xbb6a244b7cb47233754c435f50f1cd7bf5ebb919';
     setButtonState('pending');
 
     // ORO token contract address and decimals
