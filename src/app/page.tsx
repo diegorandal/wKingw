@@ -4,8 +4,6 @@ import { redirect } from 'next/navigation';
 import { UserInfo } from '@/components/UserInfo';
 import { Pay } from '@/components/Pay';
 import { Verify } from '@/components/Verify';
-import { AttackButton } from '@/components/AttackButton';
-import { DefenseButton } from '@/components/DefenseButton';
 
 export default async function Home() {
   const session = await auth();
