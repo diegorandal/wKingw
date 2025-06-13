@@ -64,7 +64,7 @@ export const Pay = () => {
 
   return (
     <div className="grid w-full gap-4">
-      <p className="text-lg font-semibold">Desafiar</p>
+      <p className="text-lg font-semibold">Excavar</p>
       <LiveFeedback
         label={{
           failed: 'Payment failed',
@@ -80,9 +80,7 @@ export const Pay = () => {
           size="lg"
           variant="primary"
           className="w-full"
-        >
-          Desafiar
-        </Button>
+        ></Button>
       </LiveFeedback>
     </div>
   );

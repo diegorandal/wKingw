@@ -17,8 +17,6 @@ export default async function Home() {
   return (
     <Page>
       <Page.Main className="flex flex-col items-center justify-center">
-        <AttackButton />
-        <DefenseButton />
         <Pay />
       </Page.Main>
     </Page>
