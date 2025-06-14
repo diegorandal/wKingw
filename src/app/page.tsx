@@ -17,7 +17,6 @@ export default async function Home() {
   return (
     <Page>
       <Page.Main className="flex flex-col items-center justify-center">
-        <Pay />
         <GameBoard />
         <BalanceORO />
       </Page.Main>
@@ -25,17 +24,3 @@ export default async function Home() {
   );
 }
 
-
-{/*import { Page } from '@/components/PageLayout';
-import { AuthButton } from '../components/AuthButton';
-
-export default function Home() {
-  return (
-    <Page>
-      <Page.Main className="flex flex-col items-center justify-center">
-        <UserInfo />
-        <AuthButton />
-      </Page.Main>
-    </Page>
-  );
-}*/}

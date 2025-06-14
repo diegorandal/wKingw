@@ -82,7 +82,7 @@ export const GameBoard = () => {
   };
 
   return (
-    <div className="w-full h-[90vh] overflow-auto p-4 space-y-6 text-white font-sans bg-gradient-to-br from-black via-gray-900 to-black">
+    <div className="w-full h-[90vh] p-0 space-y-6 text-white font-sans bg-gradient-to-br from-black via-gray-900 to-black">
       {/* Encabezado del juego */}
       <div className="space-y-2 text-base sm:text-lg">
         <div className="flex items-center gap-2">
@@ -100,7 +100,7 @@ export const GameBoard = () => {
       </div>
 
       {/* Tesoro actual */}
-      <div className="bg-yellow-500/10 border border-yellow-400 shadow-lg shadow-yellow-400/20 rounded-2xl px-6 py-4 text-3xl font-bold text-yellow-300 text-center animate-pulse backdrop-blur-sm">
+      <div className="bg-yellow-500/10 border border-yellow-400 shadow-lg shadow-yellow-400/20 rounded-2xl px-2 py-1 text-xl font-bold text-yellow-300 text-center animate-pulse backdrop-blur-sm">
         💰 Tesoro: {(Number(treasureAmount) / 1e18).toFixed(2)} ORO
       </div>
 
