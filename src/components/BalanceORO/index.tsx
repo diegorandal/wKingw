@@ -1,7 +1,6 @@
 'use client';
 
 import OROtokenABI from '@/abi/ORO_ABI.json';
-import { Button, LiveFeedback } from '@worldcoin/mini-apps-ui-kit-react';
 import { MiniKit } from '@worldcoin/minikit-js';
 import { useEffect, useState } from 'react';
 import { createPublicClient, http, formatEther } from 'viem';
@@ -11,11 +10,6 @@ import { useSession } from 'next-auth/react';
 export const BalanceORO = () => {
   const myContractToken = '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63';
   const [balance, setBalance] = useState<string | null>(null);
-  const [userAddress, setUserAddress] = useState<string | null>(null);
-  const [buttonState, setButtonState] = useState<
-    'pending' | 'success' | 'failed' | undefined
-  >(undefined);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Obtener la sesión del usuario
   const { data: session, status } = useSession();
@@ -29,22 +23,13 @@ export const BalanceORO = () => {
   // Función para consultar el balanceOf
   const fetchBalance = async () => {
     if (status !== 'authenticated' || !session?.user?.username) {
-      setErrorMessage('Usuario no autenticado');
-      setButtonState('failed');
-      setTimeout(() => {
-        setButtonState(undefined);
-      }, 3000);
       return;
     }
-
-    setButtonState('pending');
-    setErrorMessage(null);
 
     try {
       // Obtener la dirección del usuario usando MiniKit con el username de la sesión
       const user = await MiniKit.getUserByUsername(session.user.username);
       const address = user.walletAddress;
-      setUserAddress(address);
 
       // Consultar el balanceOf del contrato ORO
       const balanceResult = await client.readContract({
@@ -52,24 +37,13 @@ export const BalanceORO = () => {
         abi: OROtokenABI,
         functionName: 'balanceOf',
         args: [address],
-      });
+      } as const);
 
-      
+      // Convertir el balance de wei a ether (o la unidad deseada)
       const formattedBalance = formatEther(balanceResult as bigint);
       setBalance(formattedBalance);
-      setButtonState('success');
-
-      // Restablecer el estado del botón después de 3 segundos
-      setTimeout(() => {
-        setButtonState(undefined);
-      }, 3000);
     } catch (err) {
       console.error('Error al consultar el balance:', err);
-      setErrorMessage('Error al consultar el balance');
-      setButtonState('failed');
-      setTimeout(() => {
-        setButtonState(undefined);
-      }, 3000);
     }
   };
 
@@ -81,42 +55,14 @@ export const BalanceORO = () => {
   }, [status, session]);
 
   return (
-    <div className="grid w-full gap-4">
-      <p className="text-lg font-semibold">Saldo del Token ORO</p>
-      {status === 'loading' && <p className="text-md">Cargando sesión...</p>}
-      {status === 'unauthenticated' && (
-        <p className="text-md">Por favor, inicia sesión para ver tu saldo.</p>
-      )}
-      {userAddress && status === 'authenticated' && (
-        <p className="text-sm">
-          Dirección: {userAddress.slice(0, 6)}...{userAddress.slice(-4)}
+    <>
+      {balance && status === 'authenticated' && (
+        <p
+          className="text-md bg-blue-100 border-2 border-blue-300 rounded-lg px-4 py-2 inline-block"
+        >
+          Disponible: {balance} ORO
         </p>
       )}
-      {balance && status === 'authenticated' ? (
-        <p className="text-md">Saldo: {balance} ORO</p>
-      ) : (
-        status === 'authenticated' && <p className="text-md">Cargando saldo...</p>
-      )}
-      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-      <LiveFeedback
-        label={{
-          failed: 'Error al consultar el saldo',
-          pending: 'Consultando saldo...',
-          success: 'Saldo consultado con éxito',
-        }}
-        state={buttonState}
-        className="w-full"
-      >
-        <Button
-          onClick={fetchBalance}
-          disabled={buttonState === 'pending' || status !== 'authenticated'}
-          size="lg"
-          variant="primary"
-          className="w-full"
-        >
-          Actualizar Saldo
-        </Button>
-      </LiveFeedback>
-    </div>
+    </>
   );
 };
