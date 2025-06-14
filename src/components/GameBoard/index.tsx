@@ -6,94 +6,115 @@ import { useEffect, useState } from 'react';
 import { createPublicClient, http } from 'viem';
 import { worldchain } from 'viem/chains';
 import { useSession } from 'next-auth/react';
+import { Sparkles, Trophy, Calendar } from 'lucide-react';
 
-// Definir el tipo de la tupla devuelta por getGameState
 interface GameState {
-  round: bigint; // uint256
-  treasureAmount: bigint; // uint256
-  lastWinner: string; // address
-  lastWinTimestamp: bigint; // uint256
-  bitmap: [string, string, string, string]; // bytes32[4]
+  round: bigint;
+  treasureAmount: bigint;
+  lastWinner: string;
+  lastWinTimestamp: bigint;
+  bitmap: [string, string, string, string];
 }
 
 export const GameBoard = () => {
   const contractAddress = '0xe2b81493d6c26e705bc4193a87673db07810f376';
-  const [gameState, setGameState] = useState<boolean[]>([]); // Array de 1024 bits (true = excavado, false = no excavado)
+  const [gameState, setGameState] = useState<boolean[]>([]);
+  const [round, setRound] = useState<bigint>(BigInt(0));
+  const [treasureAmount, setTreasureAmount] = useState<bigint>(BigInt(0));
+  const [lastWinner, setLastWinner] = useState<string>('');
+  const [lastWinTimestamp, setLastWinTimestamp] = useState<bigint>(BigInt(0));
 
-  // Obtener la sesión del usuario
   const { data: session, status } = useSession();
 
-  // Configuración del cliente Viem para interactuar con Worldchain
   const client = createPublicClient({
     chain: worldchain,
     transport: http('https://worldchain-mainnet.g.alchemy.com/public'),
   });
 
-  // Función para consultar getGameState
   const fetchGameState = async () => {
-    if (status !== 'authenticated' || !session?.user?.username) {
-      return;
-    }
+    if (status !== 'authenticated' || !session?.user?.username) return;
 
     try {
-      // Obtener la dirección del usuario usando MiniKit (aunque no se usa en getGameState)
       const user = await MiniKit.getUserByUsername(session.user.username);
       const address = user.walletAddress;
 
-      // Consultar getGameState del contrato con tipado explícito
       const result = await client.readContract({
         address: contractAddress,
         abi: TreasureHuntABI,
         functionName: 'getGameState',
       }) as GameState;
 
-      // Extraer el array de bytes32[4] (campo bitmap)
-      const boardData: string[] = result.bitmap;
-      
-      console.log('Board Data:', boardData);
+      setRound(result.round);
+      setTreasureAmount(result.treasureAmount);
+      setLastWinner(result.lastWinner);
+      setLastWinTimestamp(result.lastWinTimestamp);
 
-      // Convertir bytes32 a bits
+      const boardData: string[] = result.bitmap;
       const bits: boolean[] = [];
       for (const bytes32 of boardData) {
-        // Convertir bytes32 a número (BigInt)
         const num = BigInt(bytes32);
-        // Extraer 256 bits (de derecha a izquierda)
         for (let i = 255; i >= 0; i--) {
-          bits.push((num & (BigInt(1) << BigInt(i))) !== BigInt(0));
+            const mask = BigInt(1) << BigInt(i);
+            bits.push((num & mask) !== BigInt(0));
         }
       }
-
-      // Asegurar que tenemos exactamente 1024 bits
       setGameState(bits.slice(0, 1024));
     } catch (err) {
       console.error('Error al consultar getGameState:', err);
     }
   };
 
-  // Ejecutar la consulta cada 10 segundos
   useEffect(() => {
     if (status === 'authenticated' && session?.user?.username) {
-      fetchGameState(); // Consulta inicial
-      const interval = setInterval(fetchGameState, 10000); // Cada 10 segundos
-      return () => clearInterval(interval); // Limpiar intervalo al desmontar
+      fetchGameState();
+      const interval = setInterval(fetchGameState, 10000);
+      return () => clearInterval(interval);
     }
   }, [status, session]);
 
+  const formatTimestamp = (timestamp: bigint) => {
+    const date = new Date(Number(timestamp) * 1000);
+    return date.toLocaleString();
+  };
+
+  const formatAddress = (addr: string) => {
+    return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+  };
+
   return (
-    <div className="w-full h-[80vh] overflow-auto">
-      <div
-        className="grid grid-cols-32 gap-0 w-full"
-        style={{ aspectRatio: '1/1' }}
-      >
+    <div className="w-full h-[90vh] overflow-auto p-4 space-y-6 text-white font-sans bg-gradient-to-br from-black via-gray-900 to-black">
+      {/* Encabezado del juego */}
+      <div className="space-y-2 text-base sm:text-lg">
+        <div className="flex items-center gap-2">
+          <Sparkles className="text-cyan-400" size={20} />
+          <span><strong>Ronda:</strong> {round.toString()}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Trophy className="text-yellow-400" size={20} />
+          <span><strong>Ganador anterior:</strong> {lastWinner ? formatAddress(lastWinner) : 'Ninguno'}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Calendar className="text-pink-400" size={20} />
+          <span><strong>Última victoria:</strong> {lastWinTimestamp > BigInt(0) ? formatTimestamp(lastWinTimestamp) : 'Nunca'}</span>
+        </div>
+      </div>
+
+      {/* Tesoro actual */}
+      <div className="bg-yellow-500/10 border border-yellow-400 shadow-lg shadow-yellow-400/20 rounded-2xl px-6 py-4 text-3xl font-bold text-yellow-300 text-center animate-pulse backdrop-blur-sm">
+        💰 Tesoro: {(Number(treasureAmount) / 1e18).toFixed(2)} ORO
+      </div>
+
+      {/* Tablero */}
+      <div className="grid grid-cols-32 gap-0 w-full" style={{ aspectRatio: '1/1' }}>
         {gameState.length === 1024 &&
           gameState.map((isDug, index) => (
             <div
               key={index}
-              className={`w-full h-full ${isDug ? 'bg-orange-500' : 'bg-green-500'}`}
-              style={{ aspectRatio: '1/1' }}
-              title={`Celda ${index % 32},${Math.floor(index / 32)}: ${
-                isDug ? 'Excavada' : 'No excavada'
+              className={`w-full h-full transition-colors duration-200 ease-in-out ${
+                isDug ? 'bg-yellow-800' : 'bg-green-700 hover:bg-green-600'
               }`}
+              style={{ aspectRatio: '1/1' }}
+              title={`Celda ${index % 32},${Math.floor(index / 32)}: ${isDug ? 'Excavada' : 'No excavada'}`}
             />
           ))}
       </div>
