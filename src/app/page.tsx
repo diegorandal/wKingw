@@ -16,7 +16,7 @@ export default async function Home() {
 
   return (
     <Page>
-      <Page.Main className="flex flex-col items-center justify-center">
+      <Page.Main className="flex flex-col justify-start items-stretch w-full">
         <GameBoard />
         <BalanceORO />
       </Page.Main>

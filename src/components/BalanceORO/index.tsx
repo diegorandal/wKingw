@@ -58,7 +58,7 @@ export const BalanceORO = () => {
   return (
     <>
       {balance && status === 'authenticated' && (
-        <p className="text-md bg-gray-100 border-2 border-gray-300 rounded-lg px-4 py-2 text-black">
+        <p className="w-full text-md bg-gray-100 border-2 border-gray-300 rounded-lg px-4 py-2 text-black">
           Disponible: {balance} ORO
         </p>
       )}
