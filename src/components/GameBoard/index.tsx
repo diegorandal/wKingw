@@ -54,8 +54,8 @@ export const GameBoard = () => {
       for (const bytes32 of boardData) {
         const num = BigInt(bytes32);
         for (let i = 255; i >= 0; i--) {
-            const mask = BigInt(1) << BigInt(i);
-            bits.push((num & mask) !== BigInt(0));
+          const mask = BigInt(1) << BigInt(i);
+          bits.push((num & mask) !== BigInt(0));
         }
       }
       setGameState(bits.slice(0, 1024));
@@ -85,47 +85,48 @@ export const GameBoard = () => {
     <div className="w-full p-0 space-y-6 text-white font-sans bg-gradient-to-br from-black via-gray-900 to-black">
       {/* Tesoro actual */}
       <div className="bg-yellow-500/10 border border-yellow-400 shadow-lg shadow-yellow-400/20 rounded-2xl px-2 py-1 text-xl font-bold text-yellow-300 text-center animate-pulse backdrop-blur-sm">
-  💰 Tesoro: {(Number(treasureAmount) * 0.75 / 1e18).toFixed(2)} ORO
+        💰 Tesoro: {(Number(treasureAmount) * 0.75 / 1e18).toFixed(2)} ORO
       </div>
 
-        {/* Tablero */}
-        <div className="grid grid-cols-32 gap-0 w-full" style={{ aspectRatio: '1/1' }}>
+      {/* Tablero */}
+      <div className="grid grid-cols-32 gap-0 w-full" style={{ aspectRatio: '1/1' }}>
         {gameState.length === 1024 &&
-            gameState.map((isDug, index) => (
+          gameState.map((isDug, index) => (
             <div
-                key={index}
-                className="w-full h-full bg-no-repeat bg-center bg-cover transition-all duration-200"
-                style={{
-                aspectRatio: '1 / 1',
-                backgroundImage: isDug
-                    ? 'url(/sprites/dirt.png), url(/sprites/grass.png)'
-                    : 'url(/sprites/grass.png)',
-                backgroundSize: isDug ? '60% 60%, cover' : 'cover',
-                backgroundPosition: 'center, center',
-                }}
-                title={`Celda ${index % 32},${Math.floor(index / 32)}: ${
-                isDug ? 'Excavada' : 'No excavada'
-                }`}
+              key={index}
+              className={`w-full h-full transition-colors duration-200 ease-in-out ${
+                isDug
+                  ? 'bg-[url(/Sprites/dirt.png)]'
+                  : 'bg-[url(/Sprites/grass.png)] hover:bg-green-600/50'
+              } bg-cover bg-center`}
+              style={{ aspectRatio: '1/1' }}
+              title={`Celda ${index % 32},${Math.floor(index / 32)}: ${isDug ? 'Excavada' : 'No excavada'}`}
             />
-            ))}
-        </div>
+          ))}
+      </div>
 
-      {/* Informacion del juego */}
+      {/* Información del juego */}
       <div className="space-y-2 text-base sm:text-lg">
         <div className="flex items-center gap-2">
           <Sparkles className="text-cyan-400" size={20} />
-          <span><strong>Ronda:</strong> {round.toString()}</span>
+          <span>
+            <strong>Ronda:</strong> {round.toString()}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <Trophy className="text-yellow-400" size={20} />
-          <span><strong>Últ. ganador:</strong> {lastWinner ? formatAddress(lastWinner) : 'Ninguno'}</span>
+          <span>
+            <strong>Últ. ganador:</strong> {lastWinner ? formatAddress(lastWinner) : 'Ninguno'}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <Calendar className="text-pink-400" size={20} />
-          <span><strong>Últ. hallazgo:</strong> {lastWinTimestamp > BigInt(0) ? formatTimestamp(lastWinTimestamp) : 'Nunca'}</span>
+          <span>
+            <strong>Últ. hallazgo:</strong>{' '}
+            {lastWinTimestamp > BigInt(0) ? formatTimestamp(lastWinTimestamp) : 'Nunca'}
+          </span>
         </div>
       </div>
-
     </div>
   );
 };
