@@ -1,6 +1,6 @@
 'use client';
 
-import TestContractABI from '@/abi/ORO_ABI.json';
+import OROtokenABI from '@/abi/ORO_ABI.json';
 import { Button, LiveFeedback } from '@worldcoin/mini-apps-ui-kit-react';
 import { MiniKit } from '@worldcoin/minikit-js';
 import { useWaitForTransactionReceipt } from '@worldcoin/minikit-react';
@@ -8,18 +8,8 @@ import { useEffect, useState } from 'react';
 import { createPublicClient, http } from 'viem';
 import { worldchain } from 'viem/chains';
 
-/**
- * This component is used to get a token from a contract
- * For this to work you need to add the contract address to both contract entrypoints and permit2 tokens
- * inside of  Dev Portal > Configuration > Advanced
- * The general design pattern here is
- * 1. Trigger the transaction
- * 2. Update the transaction_id from the response to poll completion
- * 3. Wait in a useEffect for the transaction to complete
- */
 export const Transaction = () => {
-  // See the code for this contract here: https://worldscan.org/address/0xF0882554ee924278806d708396F1a7975b732522#code
-  const myContractToken = '0xF0882554ee924278806d708396F1a7975b732522';
+  const myContractToken = '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63';
   const [buttonState, setButtonState] = useState<
     'pending' | 'success' | 'failed' | undefined
   >(undefined);
@@ -78,7 +68,7 @@ export const Transaction = () => {
         transaction: [
           {
             address: myContractToken,
-            abi: TestContractABI,
+            abi: OROtokenABI,
             functionName: 'mintToken',
             args: [],
           },
@@ -135,7 +125,7 @@ export const Transaction = () => {
         transaction: [
           {
             address: myContractToken,
-            abi: TestContractABI,
+            abi: OROtokenABI,
             functionName: 'signatureTransfer',
             args: [
               [
