@@ -40,7 +40,8 @@ export const BalanceORO = () => {
       } as const);
 
       // Convertir el balance de wei a ether (o la unidad deseada)
-      const formattedBalance = formatEther(balanceResult as bigint);
+      const formattedBalance = Number(formatEther(balanceResult as bigint)).toFixed(2);
+
       setBalance(formattedBalance);
     } catch (err) {
       console.error('Error al consultar el balance:', err);
