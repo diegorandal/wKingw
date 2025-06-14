@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { UserInfo } from '@/components/UserInfo';
 import { Pay } from '@/components/Pay';
 import { BalanceORO } from '@/components/BalanceORO';
+import { GameBoard } from '@/components/GameBoard';
 import { Verify } from '@/components/Verify';
 
 export default async function Home() {
@@ -17,6 +18,7 @@ export default async function Home() {
     <Page>
       <Page.Main className="flex flex-col items-center justify-center">
         <Pay />
+        <GameBoard />
         <BalanceORO />
       </Page.Main>
     </Page>
