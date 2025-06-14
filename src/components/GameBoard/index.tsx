@@ -96,7 +96,7 @@ export const GameBoard = () => {
               key={index}
               className={`w-full h-full transition-colors duration-200 ease-in-out ${
                 isDug
-                  ? 'bg-[url(/Sprites/dirt.png)]'
+                  ? 'bg-[url(/Sprites/dirt.png)] bg-transparent'
                   : 'bg-[url(/Sprites/grass.png)] hover:bg-green-600/50'
               } bg-cover bg-center`}
               style={{ aspectRatio: '1/1' }}
