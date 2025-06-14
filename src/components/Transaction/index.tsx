@@ -1,6 +1,6 @@
 'use client';
 
-import TestContractABI from '@/abi/TestContract.json';
+import TestContractABI from '@/abi/ORO_ABI.json';
 import { Button, LiveFeedback } from '@worldcoin/mini-apps-ui-kit-react';
 import { MiniKit } from '@worldcoin/minikit-js';
 import { useWaitForTransactionReceipt } from '@worldcoin/minikit-react';
