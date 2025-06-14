@@ -49,6 +49,8 @@ export const GameBoard = () => {
 
       // Extraer el array de bytes32[4] (campo bitmap)
       const boardData: string[] = result.bitmap;
+      
+      console.log('Board Data:', boardData);
 
       // Convertir bytes32 a bits
       const bits: boolean[] = [];
@@ -78,20 +80,23 @@ export const GameBoard = () => {
   }, [status, session]);
 
   return (
-    <div
-      className="grid grid-cols-32 gap-0 w-[512px] h-[512px]"
-      style={{ aspectRatio: '1/1' }}
-    >
-      {gameState.length === 1024 &&
-        gameState.map((isDug, index) => (
-          <div
-            key={index}
-            className={`w-4 h-4 ${isDug ? 'bg-orange-700' : 'bg-green-500'}`}
-            title={`Celda ${index % 32},${Math.floor(index / 32)}: ${
-              isDug ? 'Excavada' : 'No excavada'
-            }`}
-          />
-        ))}
+    <div className="w-full h-[80vh] overflow-auto">
+      <div
+        className="grid grid-cols-32 gap-0 w-full"
+        style={{ aspectRatio: '1/1' }}
+      >
+        {gameState.length === 1024 &&
+          gameState.map((isDug, index) => (
+            <div
+              key={index}
+              className={`w-full h-full ${isDug ? 'bg-orange-500' : 'bg-green-500'}`}
+              style={{ aspectRatio: '1/1' }}
+              title={`Celda ${index % 32},${Math.floor(index / 32)}: ${
+                isDug ? 'Excavada' : 'No excavada'
+              }`}
+            />
+          ))}
+      </div>
     </div>
   );
 };
