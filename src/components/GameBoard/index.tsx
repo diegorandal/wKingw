@@ -88,28 +88,40 @@ export const GameBoard = () => {
         💰 Tesoro: {(Number(treasureAmount) * 0.75 / 1e18).toFixed(2)} ORO
       </div>
 
-    {/* Tablero */}
-    <div className="grid grid-cols-32 gap-0 w-full" style={{ aspectRatio: '1/1' }}>
-      {gameState.length === 1024 &&
-        gameState.map((isDug, index) => (
-          <div
-            key={index}
-            className="relative w-full h-full bg-[url(/Sprites/grass.png)] bg-cover bg-center" // Césped siempre de fondo, y hacemos este div relativo
-            style={{ aspectRatio: '1/1' }}
-            title={`Celda ${index % 32},${Math.floor(index / 32)}: ${isDug ? 'Excavada' : 'No excavada'}`}
-          >
-            {isDug && (
-              <div className="absolute inset-0 bg-[url(/Sprites/dirt.png)] bg-cover bg-center" />
-            )}
-
-            {!isDug && (
+      <div className="overflow-scroll w-full h-full"> {/* Puedes ajustar w-full h-full a un tamaño fijo si lo prefieres, e.g., 'w-[400px] h-[400px]' */}
+        {/* Tablero (el contenido que puede ser más grande que el contenedor de scroll y se desplaza) */}
+        <div className="grid gap-0" // Quitamos grid-cols-32 de aquí, lo definimos en style
+          style={{
+            gridTemplateColumns: 'repeat(32, 64px)', // Esto hace que cada columna tenga 40px de ancho
+            gridAutoRows: '64px', // Esto hace que cada fila tenga 40px de alto
+            width: 'max-content', // El grid se expandirá para contener 32 columnas de 40px (32 * 40px = 1280px)
+            height: 'max-content', // El grid se expandirá para contener 32 filas de 40px (32 * 40px = 1280px)
+          }}
+        >
+          {gameState.length === 1024 &&
+            gameState.map((isDug, index) => (
               <div
-                className="absolute inset-0 transition-colors duration-200 ease-in-out hover:bg-green-600/50"
-              />
-            )}
+                key={index}
+                // w-full h-full aquí significa que la celda ocupará el 100% de su espacio de 40x40px en la cuadrícula
+                className="relative w-full h-full bg-[url(/Sprites/grass.png)] bg-cover bg-center"
+                title={`Celda ${index % 32},${Math.floor(index / 32)}: ${isDug ? 'Excavada' : 'No excavada'}`}
+              >
+                {/* Capa de tierra (dirt) que se muestra solo si la celda fue excavada */}
+                {isDug && (
+                  <div className="absolute inset-0 bg-[url(/Sprites/dirt.png)] bg-cover bg-center" />
+                )}
 
-          </div>
-        ))}
+                {/* Capa para el efecto hover, solo si la celda NO está excavada */}
+                {!isDug && (
+                  <div
+                    className="absolute inset-0 transition-colors duration-200 ease-in-out hover:bg-green-600/50"
+                  />
+                )}
+
+                {/* Aquí puedes añadir otros elementos de la celda si los necesitas (ej. número de bombas, banderas, etc.) */}
+              </div>
+            ))}
+        </div>
       </div>
 
       {/* Información del juego */}
