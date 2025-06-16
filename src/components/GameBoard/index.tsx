@@ -89,33 +89,38 @@ export const GameBoard = () => {
       </div>
 
       {/* Mapa del tesoro */}
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100 p-4">
-      <div className="overflow-scroll w-full aspect-square max-w-full rounded-lg shadow-inner bg-white">
-        <div className="relative w-full" style={{ paddingBottom: '100%' }}>
-          <div className="absolute inset-0 grid gap-0">
-            {gameState.length === 1024 &&
-              gameState.map((isDug, index) => (
-                <div
-                  key={index}
-                  className="relative w-full h-full bg-[url(/Sprites/grass.png)] bg-cover bg-center"
-                  style={{ aspectRatio: '1/1' }} // Cada celda individual también mantiene su aspecto cuadrado
-                  title={`Celda ${index % 32},${Math.floor(index / 32)}: ${isDug ? 'Excavada' : 'No excavada'}`}
-                >
-                  {isDug && (
-                    <div className="absolute inset-0 bg-[url(/Sprites/dirt.png)] bg-cover bg-center" />
-                  )}
-                  {!isDug && (
-                    <div
-                      className="absolute inset-0 transition-colors duration-200 ease-in-out hover:bg-green-600/50"
-                    />
-                  )}
-                </div>
-              ))}
-          </div>
+
+      <div className="overflow-scroll w-full aspect-square"> {/* QUITAMOS h-full y AÑADIMOS aspect-square */}
+        <div
+          className="grid gap-0" // Quitamos grid-cols-32 de aquí, lo definimos en style
+          style={{
+            gridTemplateColumns: 'repeat(32, 40px)', // Esto hace que cada columna tenga 40px de ancho
+            gridAutoRows: '40px', // Esto hace que cada fila tenga 40px de alto
+            width: 'max-content', // El grid se expandirá para contener 32 columnas de 40px (32 * 40px = 1280px)
+            height: 'max-content', // El grid se expandirá para contener 32 filas de 40px (32 * 40px = 1280px)
+          }}
+        >
+          {gameState.length === 1024 &&
+            gameState.map((isDug, index) => (
+              <div
+                key={index}
+                className="relative w-full h-full bg-[url(/Sprites/grass.png)] bg-cover bg-center"
+                title={`Celda ${index % 32},${Math.floor(index / 32)}: ${isDug ? 'Excavada' : 'No excavada'}`}
+              >
+                {isDug && (
+                  <div className="absolute inset-0 bg-[url(/Sprites/dirt.png)] bg-cover bg-center" />
+                )}
+
+                {!isDug && (
+                  <div
+                    className="absolute inset-0 transition-colors duration-200 ease-in-out hover:bg-green-600/50"
+                  />
+                )}
+                {/* Aquí puedes añadir otros elementos de la celda si los necesitas (ej. número de bombas, banderas, etc.) */}
+              </div>
+            ))}
         </div>
       </div>
-    </div>
-
 
       {/* Información del juego */}
       <div className="space-y-2 text-base sm:text-lg">
