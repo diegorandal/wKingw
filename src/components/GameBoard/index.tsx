@@ -88,21 +88,28 @@ export const GameBoard = () => {
         💰 Tesoro: {(Number(treasureAmount) * 0.75 / 1e18).toFixed(2)} ORO
       </div>
 
-      {/* Tablero */}
-      <div className="grid grid-cols-32 gap-0 w-full" style={{ aspectRatio: '1/1' }}>
-        {gameState.length === 1024 &&
-          gameState.map((isDug, index) => (
-            <div
-              key={index}
-              className={`w-full h-full transition-colors duration-200 ease-in-out ${
-                isDug
-                  ? 'bg-[url(/Sprites/dirt.png)] bg-transparent'
-                  : 'bg-[url(/Sprites/grass.png)] hover:bg-green-600/50'
-              } bg-cover bg-center`}
-              style={{ aspectRatio: '1/1' }}
-              title={`Celda ${index % 32},${Math.floor(index / 32)}: ${isDug ? 'Excavada' : 'No excavada'}`}
-            />
-          ))}
+    {/* Tablero */}
+    <div className="grid grid-cols-32 gap-0 w-full" style={{ aspectRatio: '1/1' }}>
+      {gameState.length === 1024 &&
+        gameState.map((isDug, index) => (
+          <div
+            key={index}
+            className="relative w-full h-full bg-[url(/Sprites/grass.png)] bg-cover bg-center" // Césped siempre de fondo, y hacemos este div relativo
+            style={{ aspectRatio: '1/1' }}
+            title={`Celda ${index % 32},${Math.floor(index / 32)}: ${isDug ? 'Excavada' : 'No excavada'}`}
+          >
+            {isDug && (
+              <div className="absolute inset-0 bg-[url(/Sprites/dirt.png)] bg-cover bg-center" />
+            )}
+
+            {!isDug && (
+              <div
+                className="absolute inset-0 transition-colors duration-200 ease-in-out hover:bg-green-600/50"
+              />
+            )}
+
+          </div>
+        ))}
       </div>
 
       {/* Información del juego */}
