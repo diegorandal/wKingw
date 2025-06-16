@@ -87,35 +87,23 @@ export const GameBoard = () => {
       <div className="bg-yellow-500/10 border border-yellow-400 shadow-lg shadow-yellow-400/20 rounded-2xl px-2 py-1 text-xl font-bold text-yellow-300 text-center animate-pulse backdrop-blur-sm">
         💰 Tesoro: {(Number(treasureAmount) * 0.75 / 1e18).toFixed(2)} ORO
       </div>
+
       {/* Mapa del tesoro */}
-      <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
-
-      {/* Contenedor que permite el scroll.
-          max-h-screen para que no exceda la altura de la pantalla.
-          overflow-scroll para habilitar el desplazamiento.
-      */}
-      <div className="overflow-scroll w-full max-w-full rounded-lg shadow-inner bg-white"
-           style={{ maxHeight: '100vh' }}> {/* O 'maxHeight: 50vh' si quieres que ocupe la mitad de la pantalla, como antes */}
-
-        {/* Tablero (el contenido que se escalará y se desplazará) */}
-        {/* Aquí usamos un truco con padding-bottom para mantener el aspectRatio 1:1 para el tablero */}
-        <div className="relative w-full" style={{ paddingBottom: '100%' }}> {/* padding-bottom en % es relativo al ancho */}
-          <div className="absolute inset-0 grid gap-0"> {/* El grid ocupa todo el espacio del padre que ahora es cuadrado */}
+    <div className="flex flex-col items-center justify-center h-screen bg-gray-100 p-4">
+      <div className="overflow-scroll w-full aspect-square max-w-full rounded-lg shadow-inner bg-white">
+        <div className="relative w-full" style={{ paddingBottom: '100%' }}>
+          <div className="absolute inset-0 grid gap-0">
             {gameState.length === 1024 &&
               gameState.map((isDug, index) => (
                 <div
                   key={index}
                   className="relative w-full h-full bg-[url(/Sprites/grass.png)] bg-cover bg-center"
-                  // Cada celda individualmente también mantiene su aspecto cuadrado
-                  style={{ aspectRatio: '1/1' }}
+                  style={{ aspectRatio: '1/1' }} // Cada celda individual también mantiene su aspecto cuadrado
                   title={`Celda ${index % 32},${Math.floor(index / 32)}: ${isDug ? 'Excavada' : 'No excavada'}`}
                 >
-                  {/* Capa de tierra (dirt) que se muestra solo si la celda fue excavada */}
                   {isDug && (
                     <div className="absolute inset-0 bg-[url(/Sprites/dirt.png)] bg-cover bg-center" />
                   )}
-
-                  {/* Capa para el efecto hover, solo si la celda NO está excavada */}
                   {!isDug && (
                     <div
                       className="absolute inset-0 transition-colors duration-200 ease-in-out hover:bg-green-600/50"
