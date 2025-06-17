@@ -79,6 +79,8 @@ export default function GameWithDig() {
     //alert(`Cavar en ${selectedCoords.col}, ${selectedCoords.row}`);
     if (selectedCoords.col === null || selectedCoords.row === null || selectedCoords.index === null) {console.error('No cell selected'); return;};
 
+    try {
+
       const oroAmount = parseUnits('1',18);
 
       await MiniKit.commandsAsync.sendTransaction({
@@ -100,6 +102,10 @@ export default function GameWithDig() {
           }
         ]
       });
+
+    } catch (err) {
+      console.error('Error dig:', err);
+    }
 
   };
 
