@@ -9,6 +9,7 @@ export const DigButton = ({ col, row, onDig }: { col: number | null, row: number
     variant="primary"
     className="w-full"
   >
-    {col !== null && row !== null ? `Cavar en ${col}, ${row}` : 'Selecciona una celda'}
+    {col !== null && row !== null ? `Cavar en ${col}, ${row} por 1 ORO` : 'Selecciona un lugar'}
   </Button>
+  
 );

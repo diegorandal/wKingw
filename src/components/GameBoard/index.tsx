@@ -7,7 +7,8 @@ import { createPublicClient, http } from 'viem';
 import { worldchain } from 'viem/chains';
 import { useSession } from 'next-auth/react';
 import { Sparkles, Trophy, Calendar } from 'lucide-react';
-
+import { GameInfo } from '../GameInfo';
+ 
 interface GameState {
   round: bigint;
   treasureAmount: bigint;
@@ -16,7 +17,7 @@ interface GameState {
   bitmap: [string, string, string, string];
 }
 
-export const GameBoard = ({ onCellSelect }: { onCellSelect: (col: number, row: number) => void }) => {
+export const GameBoard = ({ onCellSelect, onGameInfo }: { onCellSelect: (col: number, row: number) => void, onGameInfo: (round: bigint, lastWinner: string, lastWinTimestamp: bigint) => void }) => {
   const contractAddress = '0xe2b81493d6c26e705bc4193a87673db07810f376';
   const [gameState, setGameState] = useState<boolean[]>([]);
   const [round, setRound] = useState<bigint>(BigInt(0));
@@ -74,6 +75,12 @@ export const GameBoard = ({ onCellSelect }: { onCellSelect: (col: number, row: n
     }
   }, [status, session]);
 
+  // Cuando se actualizan round, lastWinner o lastWinTimestamp, notificar al padre
+  useEffect(() => {
+    onGameInfo(round, lastWinner, lastWinTimestamp);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [round, lastWinner, lastWinTimestamp]);
+
   const formatTimestamp = (timestamp: bigint) => {
     const date = new Date(Number(timestamp) * 1000);
     return date.toLocaleString();
@@ -96,7 +103,8 @@ export const GameBoard = ({ onCellSelect }: { onCellSelect: (col: number, row: n
   };
 
   return (
-    <div className="w-full p-0 space-y-6 text-white font-sans bg-gradient-to-br from-black via-gray-900 to-black h-screen flex flex-col items-stretch justify-center">      <div className="bg-yellow-500/10 border border-yellow-400 shadow-lg shadow-yellow-400/20 rounded-2xl px-2 py-1 text-xl font-bold text-yellow-300 text-center animate-pulse backdrop-blur-sm">
+    <div className="w-full p-0 space-y-6 text-white font-sans bg-gradient-to-br from-black via-gray-900 to-black h-screen flex flex-col items-stretch justify-center">
+      <div className="bg-yellow-500/10 border border-yellow-400 shadow-lg shadow-yellow-400/20 rounded-2xl px-2 py-1 text-xl font-bold text-yellow-300 text-center animate-pulse backdrop-blur-sm">
         💰 Tesoro: {(Number(treasureAmount) * 0.75 / 1e18).toFixed(2)} ORO
       </div>
 
@@ -142,27 +150,13 @@ export const GameBoard = ({ onCellSelect }: { onCellSelect: (col: number, row: n
         </div>
       </div>
 
-      <div className="space-y-2 text-base sm:text-lg mt-4">
-        <div className="flex items-center gap-2">
-          <Sparkles className="text-cyan-400" size={20} />
-          <span>
-            <strong>Ronda:</strong> {round.toString()}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Trophy className="text-yellow-400" size={20} />
-          <span>
-            <strong>Últ. ganador:</strong> {lastWinner ? formatAddress(lastWinner) : 'Ninguno'}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Calendar className="text-pink-400" size={20} />
-          <span>
-            <strong>Últ. hallazgo:</strong>{' '}
-            {lastWinTimestamp > BigInt(0) ? formatTimestamp(lastWinTimestamp) : 'Nunca'}
-          </span>
-        </div>
-      </div>
+      <GameInfo
+        round={round}
+        lastWinner={lastWinner}
+        lastWinTimestamp={lastWinTimestamp}
+        formatAddress={formatAddress}
+        formatTimestamp={formatTimestamp}
+      />
     </div>
   );
 };
