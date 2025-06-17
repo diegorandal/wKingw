@@ -8,6 +8,7 @@ import { MiniKit } from '@worldcoin/minikit-js';
 import { createPublicClient, http } from 'viem';
 import { worldchain } from 'viem/chains';
 import { useSession } from 'next-auth/react';
+import { erc20Abi, parseEther } from 'viem';
 
 export default function GameWithDig() {
   const [selectedCoords, setSelectedCoords] = useState<{ col: number | null, row: number | null, index: number | null }>({ col: null, row: null, index: null });
@@ -72,27 +73,31 @@ export default function GameWithDig() {
     setSelectedCoords({ col, row, index });
   };
 
-  const handleDig = () => {
+  const handleDig = async () => {
 
     //alert(`Cavar en ${selectedCoords.col}, ${selectedCoords.row}`);
     if (selectedCoords.col === null || selectedCoords.row === null || selectedCoords.index === null) {console.error('No cell selected'); return;};
 
-    MiniKit.commandsAsync.sendTransaction({
-      transaction: [
-        {
-          address: '0xe2b81493d6c26e705bc4193a87673db07810f376',
-          abi: TreasureHuntABI,
-          functionName: 'dig',
-          args: [selectedCoords.col, selectedCoords.row],
-        },
-      ],
-    })
-      .then((result) => {
-        console.log('Transaction sent:', result);
-        setSelectedCoords({ col: null, row: null, index: null });
-      })
-      .catch((err) => {
-        console.error('Error sending transaction:', err);
+      const oroAmount = parseEther('0.1');
+
+      await MiniKit.commandsAsync.sendTransaction({
+        transaction: [
+          {
+            address: '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63',
+            abi: erc20Abi,
+            functionName: 'approve',
+            args: [
+              '0xe2B81493d6C26E705bc4193A87673db07810f376',
+              oroAmount
+            ]
+          },
+          {
+            address: '0xe2B81493d6C26E705bc4193A87673db07810f376',
+            abi: TreasureHuntABI,
+            functionName: 'dig',
+            args: [selectedCoords.col, selectedCoords.row]
+          }
+        ]
       });
 
   };

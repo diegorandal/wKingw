@@ -9,6 +9,7 @@ import { useSession } from 'next-auth/react';
 
 export const BalanceORO = () => {
   const myContractToken = '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63';
+                           
   const [balance, setBalance] = useState<string | null>(null);
 
   // Obtener la sesión del usuario
