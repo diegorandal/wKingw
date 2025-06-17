@@ -4,6 +4,7 @@ import { GameBoard } from './GameBoard';
 import { DigButton } from './DigButton';
 import { GameInfo } from './GameInfo';
 import TreasureHuntABI from '@/abi/TreasureHunt_ABI.json';
+import ORO_ABI from '@/abi/ORO_ABI.json';
 import { MiniKit } from '@worldcoin/minikit-js';
 import { createPublicClient, http } from 'viem';
 import { worldchain } from 'viem/chains';
@@ -78,13 +79,13 @@ export default function GameWithDig() {
     //alert(`Cavar en ${selectedCoords.col}, ${selectedCoords.row}`);
     if (selectedCoords.col === null || selectedCoords.row === null || selectedCoords.index === null) {console.error('No cell selected'); return;};
 
-      const oroAmount = parseEther('0.1');
+      const oroAmount = parseEther('1');
 
       await MiniKit.commandsAsync.sendTransaction({
         transaction: [
           {
             address: '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63',
-            abi: erc20Abi,
+            abi: ORO_ABI,
             functionName: 'approve',
             args: [
               '0xe2B81493d6C26E705bc4193A87673db07810f376',
