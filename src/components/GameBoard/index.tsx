@@ -7,7 +7,6 @@ import { createPublicClient, http } from 'viem';
 import { worldchain } from 'viem/chains';
 import { useSession } from 'next-auth/react';
 import { Sparkles, Trophy, Calendar } from 'lucide-react';
-import { GameInfo } from '../GameInfo';
  
 interface GameState {
   round: bigint;
@@ -149,14 +148,6 @@ export const GameBoard = ({ onCellSelect, onGameInfo }: { onCellSelect: (col: nu
             ))}
         </div>
       </div>
-
-      <GameInfo
-        round={round}
-        lastWinner={lastWinner}
-        lastWinTimestamp={lastWinTimestamp}
-        formatAddress={formatAddress}
-        formatTimestamp={formatTimestamp}
-      />
     </div>
   );
 };
