@@ -80,9 +80,18 @@ export default function GameWithDig() {
     if (selectedCoords.col === null || selectedCoords.row === null || selectedCoords.index === null) {console.error('No cell selected'); return;};
 
     try {
-
-      const oroAmount = parseUnits('1',18);
+      
+      const oroAmount = parseEther('1');
+      //const oroAmount = parseUnits('1',18);
       console.log('ORO amount:', oroAmount);
+      if (!selectedCoords || typeof selectedCoords.col !== 'number' || typeof selectedCoords.row !== 'number') {
+        console.error('Coordenadas no válidas:', selectedCoords);
+        return;
+      }
+      if (selectedCoords.col < 0 || selectedCoords.col >= 32 || selectedCoords.row < 0 || selectedCoords.row >= 32) {
+        console.error('Coordenadas fuera de rango:', selectedCoords);
+        return;
+      }
 
       await MiniKit.commandsAsync.sendTransaction({
         transaction: [
@@ -106,8 +115,8 @@ export default function GameWithDig() {
 
       console.log('SendTransaction executed successfully');
 
-    } catch (err) {
-      console.error('Error dig:', err);
+    } catch (err: any) {
+      console.error('Error en dig:', {message: err.message, code: err.code, details: err.details});
     }
 
   };
