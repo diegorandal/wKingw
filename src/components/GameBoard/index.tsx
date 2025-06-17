@@ -129,7 +129,7 @@ export const GameBoard = () => {
 
                 {!isDug && index === selectedIndex && (
                   <div
-                    className="absolute inset-0 bg-blue-500/30 animate-pulse" // Un fondo semi-transparente azul que parpadea
+                    className="absolute inset-0 bg-white/30 animate-pulse"
                   />
                 )}
                 {!isDug && (
