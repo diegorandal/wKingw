@@ -9,7 +9,7 @@ interface GameInfoProps {
 }
 
 export const GameInfo: React.FC<GameInfoProps> = ({ round, lastWinner, lastWinTimestamp, formatAddress, formatTimestamp }) => (
-  <div className="space-y-2 text-base sm:text-lg mt-4">
+  <div className="space-y-2 text-base sm:text-lg mt-4 pb-2">
     <div className="flex items-center gap-2">
       <span className="text-cyan-400">🏆</span>
       <span>
