@@ -16,7 +16,7 @@ interface GameState {
   bitmap: [string, string, string, string];
 }
 
-export const GameBoard = () => {
+export const GameBoard = ({ onCellSelect }: { onCellSelect: (col: number, row: number) => void }) => {
   const contractAddress = '0xe2b81493d6c26e705bc4193a87673db07810f376';
   const [gameState, setGameState] = useState<boolean[]>([]);
   const [round, setRound] = useState<bigint>(BigInt(0));
@@ -89,10 +89,10 @@ export const GameBoard = () => {
       return;
     }
     setSelectedIndex(index);
-
     const col = index % 32;
     const row = Math.floor(index / 32);
     console.log(`Celda seleccionada (Índice: ${index}, Coordenadas: [${col}, ${row}])`);
+    onCellSelect(col, row);
   };
 
   return (
