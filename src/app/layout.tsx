@@ -37,8 +37,8 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ClientProviders session={session}>
-          <main className="w-full min-h-screen px-2 pt-2 pb-20">{children}</main>
-          <footer className="px-2 text-center text-sm text-gray-500">© 2025 - Powered by Diego Randal</footer>
+          <main className="w-full min-h-screen px-0 pt-0 pb-20">{children}</main>
+          <footer className="px-0 text-center text-sm text-gray-500">© 2025 - Diego Randal</footer>
         </ClientProviders>
       </body>
     </html>

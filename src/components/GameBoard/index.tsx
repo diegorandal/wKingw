@@ -117,7 +117,6 @@ export const GameBoard = () => {
                 key={index}
                 className={`
                   relative w-full h-full bg-[url(/Sprites/grass.png)] bg-cover bg-center
-                  ${index === selectedIndex ? 'animate-pulse' : ''} /* <-- ¡CAMBIADO A animate-pulse! */
                   ${isDug ? 'cursor-not-allowed' : 'cursor-pointer'}
                 `}
                 style={{ aspectRatio: '1/1' }}
@@ -128,11 +127,17 @@ export const GameBoard = () => {
                   <div className="absolute inset-0 bg-[url(/Sprites/dirt.png)] bg-cover bg-center" />
                 )}
 
+                {!isDug && index === selectedIndex && (
+                  <div
+                    className="absolute inset-0 bg-blue-500/30 animate-pulse" // Un fondo semi-transparente azul que parpadea
+                  />
+                )}
                 {!isDug && (
                   <div
                     className="absolute inset-0 transition-colors duration-200 ease-in-out hover:bg-green-600/50"
                   />
                 )}
+                {/* Aquí podrías añadir otros elementos de la celda (ej. números, banderas) */}
               </div>
             ))}
         </div>
