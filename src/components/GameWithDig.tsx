@@ -82,6 +82,7 @@ export default function GameWithDig() {
     try {
 
       const oroAmount = parseUnits('1',18);
+      console.log('ORO amount:', oroAmount);
 
       await MiniKit.commandsAsync.sendTransaction({
         transaction: [
@@ -102,6 +103,8 @@ export default function GameWithDig() {
           }
         ]
       });
+
+      console.log('SendTransaction executed successfully');
 
     } catch (err) {
       console.error('Error dig:', err);
