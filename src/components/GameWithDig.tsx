@@ -1,43 +1,118 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { GameBoard } from './GameBoard';
 import { DigButton } from './DigButton';
 import { GameInfo } from './GameInfo';
+import TreasureHuntABI from '@/abi/TreasureHunt_ABI.json';
+import { MiniKit } from '@worldcoin/minikit-js';
+import { createPublicClient, http } from 'viem';
+import { worldchain } from 'viem/chains';
+import { useSession } from 'next-auth/react';
 
 export default function GameWithDig() {
-  const [selectedCoords, setSelectedCoords] = useState<{ col: number | null, row: number | null }>({ col: null, row: null });
+  const [selectedCoords, setSelectedCoords] = useState<{ col: number | null, row: number | null, index: number | null }>({ col: null, row: null, index: null });
+  const [gameState, setGameState] = useState<boolean[]>([]);
   const [round, setRound] = useState<bigint>(BigInt(0));
+  const [treasureAmount, setTreasureAmount] = useState<bigint>(BigInt(0));
   const [lastWinner, setLastWinner] = useState<string>('');
   const [lastWinTimestamp, setLastWinTimestamp] = useState<bigint>(BigInt(0));
 
-  // Funciones para formatear datos
+  const { data: session, status } = useSession();
+
+  const client = createPublicClient({
+    chain: worldchain,
+    transport: http('https://worldchain-mainnet.g.alchemy.com/public'),
+  });
+
+  const fetchGameState = async () => {
+    if (status !== 'authenticated' || !session?.user?.username) return;
+    try {
+      const user = await MiniKit.getUserByUsername(session.user.username);
+      const address = user.walletAddress;
+      const result = await client.readContract({
+        address: '0xe2b81493d6c26e705bc4193a87673db07810f376',
+        abi: TreasureHuntABI,
+        functionName: 'getGameState',
+      }) as any;
+      setRound(result.round);
+      setTreasureAmount(result.treasureAmount);
+      setLastWinner(result.lastWinner);
+      setLastWinTimestamp(result.lastWinTimestamp);
+      const boardData: string[] = result.bitmap;
+      const bits: boolean[] = [];
+      for (const bytes32 of boardData) {
+        const num = BigInt(bytes32);
+        for (let i = 255; i >= 0; i--) {
+          const mask = BigInt(1) << BigInt(i);
+          bits.push((num & mask) !== BigInt(0));
+        }
+      }
+      setGameState(bits.slice(0, 1024));
+    } catch (err) {
+      console.error('Error al consultar getGameState:', err);
+    }
+  };
+
+  useEffect(() => {
+    if (status === 'authenticated' && session?.user?.username) {
+      fetchGameState();
+      const interval = setInterval(fetchGameState, 10000);
+      return () => clearInterval(interval);
+    }
+  }, [status, session]);
+
   const formatAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`;
   const formatTimestamp = (timestamp: bigint) => {
     const date = new Date(Number(timestamp) * 1000);
     return date.toLocaleString();
   };
 
-  // Función que GameBoard llamará al seleccionar una celda
-  const handleCellSelect = (col: number, row: number) => {
-    setSelectedCoords({ col, row });
-  };
-
-  // GameBoard debe informar cambios de info de juego
-  const handleGameInfo = (round: bigint, lastWinner: string, lastWinTimestamp: bigint) => {
-    setRound(round);
-    setLastWinner(lastWinner);
-    setLastWinTimestamp(lastWinTimestamp);
+  const handleCellSelect = (col: number, row: number, index: number, isDug: boolean) => {
+    if (isDug) return;
+    setSelectedCoords({ col, row, index });
   };
 
   const handleDig = () => {
-    alert(`Cavar en ${selectedCoords.col}, ${selectedCoords.row}`);
+
+    //alert(`Cavar en ${selectedCoords.col}, ${selectedCoords.row}`);
+    if (selectedCoords.col === null || selectedCoords.row === null || selectedCoords.index === null) {console.error('No cell selected'); return;};
+
+    MiniKit.commandsAsync.sendTransaction({
+      transaction: [
+        {
+          address: '0xe2b81493d6c26e705bc4193a87673db07810f376',
+          abi: TreasureHuntABI,
+          functionName: 'dig',
+          args: [selectedCoords.col, selectedCoords.row],
+        },
+      ],
+    })
+      .then((result) => {
+        console.log('Transaction sent:', result);
+        setSelectedCoords({ col: null, row: null, index: null });
+      })
+      .catch((err) => {
+        console.error('Error sending transaction:', err);
+      });
+
   };
 
   return (
     <>
-      <GameBoard onCellSelect={handleCellSelect} onGameInfo={handleGameInfo} />
+      <GameBoard
+        gameState={gameState}
+        treasureAmount={treasureAmount}
+        selectedIndex={selectedCoords.index}
+        onCellSelect={handleCellSelect}
+      />
       <DigButton col={selectedCoords.col} row={selectedCoords.row} onDig={handleDig} />
-      <GameInfo round={round} lastWinner={lastWinner} lastWinTimestamp={lastWinTimestamp} formatAddress={formatAddress} formatTimestamp={formatTimestamp}/>
+      <GameInfo
+        round={round}
+        lastWinner={lastWinner}
+        lastWinTimestamp={lastWinTimestamp}
+        formatAddress={formatAddress}
+        formatTimestamp={formatTimestamp}
+      />
     </>
   );
 }
