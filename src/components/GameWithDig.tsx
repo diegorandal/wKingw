@@ -81,6 +81,13 @@ export default function GameWithDig() {
 
     try {
       
+      let address = '';
+      if (status === 'authenticated' && session?.user?.username) {
+        const user = await MiniKit.getUserByUsername(session.user.username);
+        address = user.walletAddress;
+        console.log("Wallet address:", address);
+      }
+
       const oroAmount = parseEther('1');
       //const oroAmount = parseUnits('1',18);
       console.log('ORO amount:', oroAmount);
