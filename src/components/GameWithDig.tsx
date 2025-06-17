@@ -9,7 +9,7 @@ import { MiniKit } from '@worldcoin/minikit-js';
 import { createPublicClient, http } from 'viem';
 import { worldchain } from 'viem/chains';
 import { useSession } from 'next-auth/react';
-import { erc20Abi, parseEther } from 'viem';
+import { erc20Abi, parseEther, parseUnits } from 'viem';
 
 export default function GameWithDig() {
   const [selectedCoords, setSelectedCoords] = useState<{ col: number | null, row: number | null, index: number | null }>({ col: null, row: null, index: null });
@@ -79,7 +79,7 @@ export default function GameWithDig() {
     //alert(`Cavar en ${selectedCoords.col}, ${selectedCoords.row}`);
     if (selectedCoords.col === null || selectedCoords.row === null || selectedCoords.index === null) {console.error('No cell selected'); return;};
 
-      const oroAmount = parseEther('1');
+      const oroAmount = parseUnits('1',18);
 
       await MiniKit.commandsAsync.sendTransaction({
         transaction: [
