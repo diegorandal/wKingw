@@ -33,7 +33,7 @@ try {
         address: transferDetails.to, // Dirección de mycontract
         abi: TreasureHunt_ABI, // ABI del contrato mycontract (debes importarlo o definirlo)
         functionName: 'dig',
-        args: [1, 1], // Llamada a la función dig(1,1)
+        args: [7, 7], // Llamada a la función dig(1,1)
       },
       {
         address: "0x000000000022d473030f116ddee9f6b43ac78ba3", // Dirección de Permit2
