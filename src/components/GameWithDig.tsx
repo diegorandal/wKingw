@@ -32,7 +32,7 @@ export default function GameWithDig() {
       const user = await MiniKit.getUserByUsername(session.user.username);
       const address = user.walletAddress;
       const result = await client.readContract({
-        address: '0xe2b81493d6c26e705bc4193a87673db07810f376',
+        address: '0x8ea430ccd2618957630bc7130b2c89a07068ad38',
         abi: TreasureHuntABI,
         functionName: 'getGameState',
       }) as any;
@@ -102,34 +102,12 @@ export default function GameWithDig() {
 
       const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
         transaction: [{
-          address: '0xe2B81493d6C26E705bc4193A87673db07810f376',
+          address: '0x8ea430ccd2618957630bc7130b2c89a07068ad38',
           abi: TreasureHuntABI,
           functionName: 'dig',
           args: [selectedCoords.col, selectedCoords.row],
         }],
       });      
-      
-      /*const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
-        transaction: [
-          {
-            address: '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63',
-            abi: ORO_ABI,
-            functionName: 'approve',
-            args: [
-              '0xe2B81493d6C26E705bc4193A87673db07810f376',
-              oroAmount
-            ]
-          },
-          {
-            address: '0xe2B81493d6C26E705bc4193A87673db07810f376',
-            abi: TreasureHuntABI,
-            functionName: 'dig',
-            args: [selectedCoords.col, selectedCoords.row]
-          }
-        ]
-      });
-      */
-
 
       console.log('FinalPayload:' , JSON.stringify(finalPayload));
 
