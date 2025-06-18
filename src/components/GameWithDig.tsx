@@ -101,32 +101,44 @@ export default function GameWithDig() {
       }
 
       const PERMIT_EXPIRATION = Math.floor(Date.now() / 1000) + 3600; // 1 hora desde ahora
+
       const permitStruct = {
         permitted: {
-          token: '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63',
+          token: '0xcd1e32b86953d79a6ac58e813d2ea7a1790cab63', // 🔥 en lowercase
           amount: oroAmount,
         },
-        spender: '0x8Ea430CCD2618957630bC7130B2c89a07068AD38',
-        nonce: BigInt(0), // cambia si usás múltiples firmas por usuario
+        spender: '0x8ea430ccd2618957630bc7130b2c89a07068ad38', // 🔥 en lowercase
+        nonce: BigInt(0),
         deadline: PERMIT_EXPIRATION,
       };
 
-      const {finalPayload} = await MiniKit.commandsAsync.sendTransaction({
-        transaction: [{
-          address: '0x8Ea430CCD2618957630bC7130B2c89a07068AD38',
-          abi: TreasureHuntABI,
-          functionName: 'digWithPermit',
-          args: [
-            selectedCoords.col, selectedCoords.row,
-            { token: '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63', amount: oroAmount, expiration: PERMIT_EXPIRATION, nonce: BigInt(0) },
-            { to: '0x8Ea430CCD2618957630bC7130B2c89a07068AD38', requestedAmount: oroAmount },
-            address,
-            'PERMIT2_SIGNATURE_PLACEHOLDER_0'
-          ]
-        }],
-  permit2: [permitStruct]  // <-- este campo ES OBLIGATORIO
+      const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
+        transaction: [
+          {
+            address: '0x8ea430ccd2618957630bc7130b2c89a07068ad38',
+            abi: TreasureHuntABI,
+            functionName: 'digWithPermit',
+            args: [
+              selectedCoords.col, // x
+              selectedCoords.row, // y
+              {
+                token: '0xcd1e32b86953d79a6ac58e813d2ea7a1790cab63',
+                amount: oroAmount,
+                expiration: PERMIT_EXPIRATION,
+                nonce: BigInt(0),
+              },
+              {
+                to: '0x8ea430ccd2618957630bc7130b2c89a07068ad38',
+                requestedAmount: oroAmount,
+              },
+              address, // 👤 El address del usuario firmante (owner)
+              'PERMIT2_SIGNATURE_PLACEHOLDER_0',
+            ],
+          },
+        ],
+        permit2: [permitStruct], // 👈 necesario para que MiniKit genere y adjunte la firma
+      });
 
-});
 
     
 
