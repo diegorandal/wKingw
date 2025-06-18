@@ -11,7 +11,7 @@ export const Permit2Button = () => {
 
 const onClickUsePermit2 = async () => {
 
-  /*  
+    
   console.log('onClickUsePermit2 clicked');
 
   // Permit2 is valid for max 1 hour
@@ -30,7 +30,8 @@ const onClickUsePermit2 = async () => {
   };
 
   try {
-    const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
+    // Primero ejecuta la transacción Permit2 (como ya tienes)
+    const { finalPayload: permitPayload } = await MiniKit.commandsAsync.sendTransaction({
       transaction: [
         {
           address: "0xF0882554ee924278806d708396F1a7975b732522",
@@ -38,15 +39,12 @@ const onClickUsePermit2 = async () => {
           functionName: 'signatureTransfer',
           args: [
             [
-              [
-                permitTransfer.permitted.token,
-                permitTransfer.permitted.amount,
-              ],
+              [permitTransfer.permitted.token, permitTransfer.permitted.amount],
               permitTransfer.nonce,
               permitTransfer.deadline,
             ],
             [transferDetails.to, transferDetails.requestedAmount],
-            'PERMIT2_SIGNATURE_PLACEHOLDER_0', // Placeholders will automatically be replaced with the correct signature. 
+            'PERMIT2_SIGNATURE_PLACEHOLDER_0',
           ],
         },
       ],
@@ -54,37 +52,30 @@ const onClickUsePermit2 = async () => {
         {
           ...permitTransfer,
           spender: myContractToken,
-        }, // If you have more than one permit2 you can add more values here.
+        },
       ],
     });
-  } catch (error) {
-    console.error('Error sending transaction:', error);
+    console.log('Permit2 FinalPayload:', JSON.stringify(permitPayload));
+
+    // Luego ejecuta la función dig(x, y) de tu contrato TreasureHunt
+    // Aquí debes definir los valores de x e y (por ejemplo, puedes pedirlos al usuario o usar valores fijos para test)
+    const x = 0; // Reemplaza por el valor real de x
+    const y = 0; // Reemplaza por el valor real de y
+    const { finalPayload: digPayload } = await MiniKit.commandsAsync.sendTransaction({
+      transaction: [
+        {
+          address: myContractToken,
+          abi: TreasureHunt_ABI,
+          functionName: 'dig',
+          args: [x, y],
+        },
+      ],
+    });
+    console.log('Dig FinalPayload:', JSON.stringify(digPayload));
+  } catch (err: any) {
+    console.error('Error en onClickUsePermit2 o dig:', { message: err.message, code: err.code, details: err.details });
   }
-*/
 
-const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
-  transaction: [
-    {
-      address: myContractToken,
-      abi: TreasureHunt_ABI,
-      functionName: 'dig',
-      args: [1, 2], // o los que necesites
-    },
-  ],
-  permit2: [
-    {
-      permitted: {
-        token: OROaddress,
-        amount: (1 * 10 ** 18).toString(),
-      },
-      spender: myContractToken,
-      nonce: Date.now().toString(),
-      deadline: Math.floor((Date.now() + 30 * 60 * 1000) / 1000).toString(),
-    },
-  ],
-});
-
-console.log('FinalPayload:', JSON.stringify(finalPayload));
 }
 
 return (
