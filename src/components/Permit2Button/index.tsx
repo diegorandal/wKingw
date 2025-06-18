@@ -1,5 +1,5 @@
 'use client';
-import { Button, LiveFeedback } from '@worldcoin/mini-apps-ui-kit-react';
+import { Button } from '@worldcoin/mini-apps-ui-kit-react';
 import Permit2_ABI from '@/abi/Permit2.json';
 import { MiniKit } from '@worldcoin/minikit-js'
 
@@ -9,6 +9,8 @@ export const Permit2Button = () => {
   const myContractToken = '0xe2b81493d6c26e705bc4193a87673db07810f376';
 
 const onClickUsePermit2 = async () => {
+  
+  console.log('onClickUsePermit2 clicked');
   
   // Permit2 is valid for max 1 hour
   const permitTransfer = {
