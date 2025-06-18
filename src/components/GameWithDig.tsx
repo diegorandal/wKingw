@@ -9,7 +9,7 @@ import { MiniKit } from '@worldcoin/minikit-js';
 import { createPublicClient, http } from 'viem';
 import { worldchain } from 'viem/chains';
 import { useSession } from 'next-auth/react';
-import { erc20Abi, parseEther, parseUnits } from 'viem';
+import { parseEther } from 'viem';
 
 export default function GameWithDig() {
   const [selectedCoords, setSelectedCoords] = useState<{ col: number | null, row: number | null, index: number | null }>({ col: null, row: null, index: null });
@@ -104,7 +104,7 @@ export default function GameWithDig() {
         transaction: [
           {
             address: '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63',
-            abi: erc20Abi,
+            abi: ORO_ABI,
             functionName: 'approve',
             args: [
               '0xe2B81493d6C26E705bc4193A87673db07810f376',
