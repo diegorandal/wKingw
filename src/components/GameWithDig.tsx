@@ -5,6 +5,7 @@ import { DigButton } from './DigButton';
 import { GameInfo } from './GameInfo';
 import TreasureHuntABI from '@/abi/TreasureHunt_ABI.json';
 import ORO_ABI from '@/abi/ORO_ABI.json';
+import Permit2_ABI from '@/abi/Permit2.json';
 import { MiniKit } from '@worldcoin/minikit-js';
 import { createPublicClient, http } from 'viem';
 import { worldchain } from 'viem/chains';
@@ -75,79 +76,63 @@ export default function GameWithDig() {
   };
 
   const handleDig = async () => {
+    
+    if (selectedCoords.col === null || selectedCoords.row === null || selectedCoords.index === null) {
+      console.error('No cell selected');
+      return;
+    }
 
-    //alert(`Cavar en ${selectedCoords.col}, ${selectedCoords.row}`);
-    if (selectedCoords.col === null || selectedCoords.row === null || selectedCoords.index === null) {console.error('No cell selected'); return;};
+    let address = '';
+    if (status === 'authenticated' && session?.user?.username) {
+      const user = await MiniKit.getUserByUsername(session.user.username);
+      address = user.walletAddress;
+      console.log('Wallet address:', address);
+    }
 
+    const oroAmount = parseEther('1');
+    const PERMIT_EXPIRATION = Math.floor(Date.now() / 1000) + 180;
+    
+    const permitTransfer = {
+      permitted: {
+        token: '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63',
+        amount: (0.5 * 10 ** 18).toString(),
+      },
+      nonce: Date.now().toString(),
+      deadline: Math.floor((Date.now() + 30 * 60 * 1000) / 1000).toString(),
+    };
+    const transferDetails = {
+      to: '0x8ea430ccd2618957630bc7130b2c89a07068ad38',
+      requestedAmount: (1 * 10 ** 18).toString(),
+    };
     try {
-      
-      let address = '';
-      if (status === 'authenticated' && session?.user?.username) {
-        const user = await MiniKit.getUserByUsername(session.user.username);
-        address = user.walletAddress;
-        console.log("Wallet address:", address);
-      }
-
-      const oroAmount = parseEther('1');
-      //const oroAmount = parseUnits('1',18);
-      console.log('ORO amount:', oroAmount);
-      if (!selectedCoords || typeof selectedCoords.col !== 'number' || typeof selectedCoords.row !== 'number') {
-        console.error('Coordenadas no válidas:', selectedCoords);
-        return;
-      }
-      if (selectedCoords.col < 0 || selectedCoords.col >= 32 || selectedCoords.row < 0 || selectedCoords.row >= 32) {
-        console.error('Coordenadas fuera de rango:', selectedCoords);
-        return;
-      }
-
-      const PERMIT_EXPIRATION = Math.floor(Date.now() / 1000) + 3600; // 1 hora desde ahora
-
-      const permitStruct = {
-        permitted: {
-          token: '0xcd1e32b86953d79a6ac58e813d2ea7a1790cab63', // 🔥 en lowercase
-          amount: oroAmount,
-        },
-        spender: '0x8ea430ccd2618957630bc7130b2c89a07068ad38', // 🔥 en lowercase
-        nonce: BigInt(0),
-        deadline: PERMIT_EXPIRATION,
-      };
-
       const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
         transaction: [
           {
-            address: '0x8ea430ccd2618957630bc7130b2c89a07068ad38',
-            abi: TreasureHuntABI,
-            functionName: 'digWithPermit',
+            address: '0xF0882554ee924278806d708396F1a7975b732522',
+            abi: Permit2_ABI,
+            functionName: 'signatureTransfer',
             args: [
-              selectedCoords.col, // x
-              selectedCoords.row, // y
-              {
-                token: '0xcd1e32b86953d79a6ac58e813d2ea7a1790cab63',
-                amount: oroAmount,
-                expiration: PERMIT_EXPIRATION,
-                nonce: BigInt(0),
-              },
-              {
-                to: '0x8ea430ccd2618957630bc7130b2c89a07068ad38',
-                requestedAmount: oroAmount,
-              },
-              address, // 👤 El address del usuario firmante (owner)
+              [
+                [permitTransfer.permitted.token, permitTransfer.permitted.amount],
+                permitTransfer.nonce,
+                permitTransfer.deadline,
+              ],
+              [transferDetails.to, transferDetails.requestedAmount],
               'PERMIT2_SIGNATURE_PLACEHOLDER_0',
             ],
           },
         ],
-        permit2: [permitStruct], // 👈 necesario para que MiniKit genere y adjunte la firma
+        permit2: [
+          {
+            ...permitTransfer,
+            spender: '0x8ea430ccd2618957630bc7130b2c89a07068ad38',
+          },
+        ],
       });
-
-
-    
-
-      console.log('FinalPayload:' , JSON.stringify(finalPayload));
-
+      console.log('FinalPayload:', JSON.stringify(finalPayload));
     } catch (err: any) {
-      console.error('Error en dig:', {message: err.message, code: err.code, details: err.details});
+      console.error('Error en onClickUsePermit2:', { message: err.message, code: err.code, details: err.details });
     }
-
   };
 
   return (
