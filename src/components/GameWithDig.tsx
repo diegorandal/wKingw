@@ -103,6 +103,20 @@ export default function GameWithDig() {
       await MiniKit.commandsAsync.sendTransaction({
         transaction: [
           {
+            address: '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63',
+            abi: erc20Abi,
+            functionName: 'approve',
+            args: [
+              '0xe2B81493d6C26E705bc4193A87673db07810f376',
+              oroAmount
+            ]
+          }
+        ]
+      });
+      /*
+      await MiniKit.commandsAsync.sendTransaction({
+        transaction: [
+          {
             address: '0xe2B81493d6C26E705bc4193A87673db07810f376',
             abi: TreasureHuntABI,
             functionName: 'dig',
@@ -110,7 +124,7 @@ export default function GameWithDig() {
           }
         ]
       });
-
+      */
       console.log('SendTransaction executed successfully');
 
     } catch (err: any) {
