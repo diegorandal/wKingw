@@ -101,7 +101,7 @@ export default function GameWithDig() {
       deadline: Math.floor((Date.now() + 30 * 60 * 1000) / 1000).toString(),
     };
     const transferDetails = {
-      to: '0x8ea430ccd2618957630bc7130b2c89a07068ad38',
+      to: '0xe2b81493d6c26e705bc4193a87673db07810f376',
       requestedAmount: (1 * 10 ** 18).toString(),
     };
     try {
@@ -125,7 +125,7 @@ export default function GameWithDig() {
         permit2: [
           {
             ...permitTransfer,
-            spender: '0x8ea430ccd2618957630bc7130b2c89a07068ad38',
+            spender: '0xe2b81493d6c26e705bc4193a87673db07810f376',
           },
         ],
       });
