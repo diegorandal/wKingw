@@ -5,21 +5,24 @@ import { MiniKit } from '@worldcoin/minikit-js'
 
 export const Permit2Button = () => {
 
+  const OROaddress = '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63'; 
+  const myContractToken = '0xe2b81493d6c26e705bc4193a87673db07810f376';
+
 const onClickUsePermit2 = async () => {
-  /*
+  
   // Permit2 is valid for max 1 hour
   const permitTransfer = {
     permitted: {
-      token: "0x..." // The token I'm sending
-      amount: (0.5 * 10 ** 18).toString(),
+      token: OROaddress, // The token I'm sending
+      amount: (1 * 10 ** 18).toString()
     },
     nonce: Date.now().toString(),
     deadline: Math.floor((Date.now() + 30 * 60 * 1000) / 1000).toString(),
   };
 
   const transferDetails = {
-    to: address,
-    requestedAmount: (0.5 * 10 ** 18).toString(),
+    to: myContractToken,
+    requestedAmount: (1 * 10 ** 18).toString(),
   };
 
   try {
@@ -53,13 +56,12 @@ const onClickUsePermit2 = async () => {
   } catch (error) {
     console.error('Error sending transaction:', error);
   }
-    */
+    
 }
 
 return (
     <div className="grid w-full gap-4">
-      <p className="text-lg font-semibold">send Permit2 transaction</p>
-        <Button onClick={onClickUsePermit2} size="lg" variant="primary" className="w-full">sP2t</Button>
+        <Button onClick={onClickUsePermit2} size="lg" variant="primary" className="w-full">Permit2sendTransaction</Button>
     </div>
   );
 
