@@ -36,7 +36,7 @@ try {
         args: [1, 1], // Llamada a la función dig(1,1)
       },
       {
-        address: "0xF0882554ee924278806d708396F1a7975b732522", // Dirección de Permit2
+        address: "0x000000000022d473030f116ddee9f6b43ac78ba3", // Dirección de Permit2
         abi: Permit2_ABI, // ABI de Permit2 (debes importarlo)
         functionName: 'signatureTransfer',
         args: [
@@ -60,7 +60,9 @@ try {
       },
     ],
   });
+  
   console.log("Transacción enviada:", finalPayload);
+
 } catch (error) {
   console.error("Error al enviar la transacción:", error);
 }
