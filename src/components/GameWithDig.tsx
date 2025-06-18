@@ -100,14 +100,25 @@ export default function GameWithDig() {
         return;
       }
 
-      const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
+      const PERMIT_EXPIRATION = Math.floor(Date.now() / 1000) + 3600; // 1 hora desde ahora
+
+      const {finalPayload} = await MiniKit.commandsAsync.sendTransaction({
         transaction: [{
-          address: '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63',
-          abi: ORO_ABI,
-          functionName: 'aprove',
-          args: ['0xe2b81493d6c26e705bc4193a87673db07810f376', oroAmount],
-        }],
-      });      
+          address: '0x8Ea430CCD2618957630bC7130B2c89a07068AD38',
+          abi: TreasureHuntABI,
+          functionName: 'digWithPermit',
+          args: [
+            selectedCoords.col, selectedCoords.row,
+            { token: '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63', amount: oroAmount, expiration: PERMIT_EXPIRATION, nonce: BigInt(0) },
+            { to: '0x8Ea430CCD2618957630bC7130B2c89a07068AD38', requestedAmount: oroAmount },
+            address,
+            'PERMIT2_SIGNATURE_PLACEHOLDER_0'
+          ]
+        }]
+        
+});
+
+    
 
       console.log('FinalPayload:' , JSON.stringify(finalPayload));
 
