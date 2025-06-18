@@ -100,7 +100,7 @@ export default function GameWithDig() {
         return;
       }
 
-      await MiniKit.commandsAsync.sendTransaction({
+      /*await MiniKit.commandsAsync.sendTransaction({
         transaction: [
           {
             address: '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63',
@@ -113,8 +113,9 @@ export default function GameWithDig() {
           }
         ]
       });
-      /*
-      await MiniKit.commandsAsync.sendTransaction({
+      */
+      
+      const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
         transaction: [
           {
             address: '0xe2B81493d6C26E705bc4193A87673db07810f376',
@@ -124,8 +125,8 @@ export default function GameWithDig() {
           }
         ]
       });
-      */
-      console.log('SendTransaction executed successfully');
+      
+      console.log('FinalPayload:' , finalPayload);
 
     } catch (err: any) {
       console.error('Error en dig:', {message: err.message, code: err.code, details: err.details});
