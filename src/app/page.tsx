@@ -11,9 +11,9 @@ import GameWithDig from '@/components/GameWithDig';
 export default async function Home() {
   const session = await auth();
 
-  if (!session) {
-    redirect('/api/auth/signin'); // Forzar autenticación
-  }
+  //if (!session) {
+  redirect('/api/auth/signin'); // Forzar autenticación
+  //}
 
   return (
     <Page>
