@@ -1,6 +1,7 @@
 'use client';
 import { Button } from '@worldcoin/mini-apps-ui-kit-react';
 import Permit2_ABI from '@/abi/Permit2.json';
+import TreasureHunt_ABI from '@/abi/TreasureHunt_ABI.json';
 import { MiniKit } from '@worldcoin/minikit-js'
 
 export const Permit2Button = () => {
@@ -9,9 +10,10 @@ export const Permit2Button = () => {
   const myContractToken = '0xe2b81493d6c26e705bc4193a87673db07810f376';
 
 const onClickUsePermit2 = async () => {
-  
+
+  /*  
   console.log('onClickUsePermit2 clicked');
-  
+
   // Permit2 is valid for max 1 hour
   const permitTransfer = {
     permitted: {
@@ -58,8 +60,37 @@ const onClickUsePermit2 = async () => {
   } catch (error) {
     console.error('Error sending transaction:', error);
   }
-    
+*/
+
+await MiniKit.commandsAsync.sendTransaction({
+  transaction: [
+    {
+      address: myContractToken,
+      abi: TreasureHunt_ABI,
+      functionName: 'dig',
+      args: [1, 2], // o los que necesites
+    },
+  ],
+  permit2: [
+    {
+      permitted: {
+        token: OROaddress,
+        amount: (1 * 10 ** 18).toString(),
+      },
+      spender: myContractToken,
+      nonce: Date.now().toString(),
+      deadline: Math.floor((Date.now() + 30 * 60 * 1000) / 1000).toString(),
+    },
+  ],
+});
+
+
+
+
+
 }
+
+
 
 return (
     <div className="grid w-full gap-4">
