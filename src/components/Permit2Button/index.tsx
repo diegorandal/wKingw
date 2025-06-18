@@ -62,7 +62,7 @@ const onClickUsePermit2 = async () => {
   }
 */
 
-await MiniKit.commandsAsync.sendTransaction({
+const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
   transaction: [
     {
       address: myContractToken,
@@ -84,13 +84,8 @@ await MiniKit.commandsAsync.sendTransaction({
   ],
 });
 
-
-
-
-
+console.log('FinalPayload:', JSON.stringify(finalPayload));
 }
-
-
 
 return (
     <div className="grid w-full gap-4">
