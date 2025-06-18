@@ -32,7 +32,7 @@ export default function GameWithDig() {
       const user = await MiniKit.getUserByUsername(session.user.username);
       const address = user.walletAddress;
       const result = await client.readContract({
-        address: '0xe2b81493d6c26e705bc4193a87673db07810f376',
+        address: '0x8Ea430CCD2618957630bC7130B2c89a07068AD38',
         abi: TreasureHuntABI,
         functionName: 'getGameState',
       }) as any;
@@ -101,6 +101,15 @@ export default function GameWithDig() {
       }
 
       const PERMIT_EXPIRATION = Math.floor(Date.now() / 1000) + 3600; // 1 hora desde ahora
+      const permitStruct = {
+        permitted: {
+          token: '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63',
+          amount: oroAmount,
+        },
+        spender: '0x8Ea430CCD2618957630bC7130B2c89a07068AD38',
+        nonce: BigInt(0), // cambia si usás múltiples firmas por usuario
+        deadline: PERMIT_EXPIRATION,
+      };
 
       const {finalPayload} = await MiniKit.commandsAsync.sendTransaction({
         transaction: [{
@@ -114,8 +123,9 @@ export default function GameWithDig() {
             address,
             'PERMIT2_SIGNATURE_PLACEHOLDER_0'
           ]
-        }]
-        
+        }],
+  permit2: [permitStruct]  // <-- este campo ES OBLIGATORIO
+
 });
 
     
