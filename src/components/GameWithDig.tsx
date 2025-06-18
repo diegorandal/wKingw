@@ -121,18 +121,7 @@ export default function GameWithDig() {
         ]
       });
       
-      async function copiarAlPortapapeles(texto: string) {
-        try {
-          await navigator.clipboard.writeText(JSON.stringify(finalPayload));
-          //alert('¡Copiado al portapapeles!');
-        } catch (err) {
-          //alert('No se pudo copiar 😢');
-          console.error(err);
-        }
-      }
-
-
-      console.log('FinalPayload:' , finalPayload);
+      console.log('FinalPayload:' , JSON.stringify(finalPayload));
 
     } catch (err: any) {
       console.error('Error en dig:', {message: err.message, code: err.code, details: err.details});
