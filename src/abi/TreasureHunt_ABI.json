@@ -1,64 +1,173 @@
 [
-	{
-		"inputs": [
-			{
-				"components": [
-					{
-						"internalType": "address",
-						"name": "token",
-						"type": "address"
-					},
-					{
-						"internalType": "uint160",
-						"name": "amount",
-						"type": "uint160"
-					},
-					{
-						"internalType": "uint48",
-						"name": "expiration",
-						"type": "uint48"
-					},
-					{
-						"internalType": "uint256",
-						"name": "nonce",
-						"type": "uint256"
-					}
-				],
-				"internalType": "struct IPermit2.PermitTransferFrom",
-				"name": "permit",
-				"type": "tuple"
-			},
-			{
-				"components": [
-					{
-						"internalType": "address",
-						"name": "to",
-						"type": "address"
-					},
-					{
-						"internalType": "uint160",
-						"name": "requestedAmount",
-						"type": "uint160"
-					}
-				],
-				"internalType": "struct IPermit2.SignatureTransferDetails",
-				"name": "transferDetails",
-				"type": "tuple"
-			},
-			{
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			},
-			{
-				"internalType": "bytes",
-				"name": "signature",
-				"type": "bytes"
-			}
-		],
-		"name": "permitTransferFrom",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	}
+    {
+        "inputs": [
+            {"internalType": "address", "name": "_oroToken", "type": "address"},
+            {"internalType": "address", "name": "_feeReceiver", "type": "address"},
+            {"internalType": "address", "name": "_permit2", "type": "address"}
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {"indexed": true, "internalType": "address", "name": "player", "type": "address"},
+            {"indexed": false, "internalType": "uint256", "name": "x", "type": "uint256"},
+            {"indexed": false, "internalType": "uint256", "name": "y", "type": "uint256"},
+            {"indexed": false, "internalType": "bool", "name": "success", "type": "bool"},
+            {"indexed": false, "internalType": "uint256", "name": "round", "type": "uint256"}
+        ],
+        "name": "TileDug",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {"indexed": true, "internalType": "address", "name": "sender", "type": "address"},
+            {"indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256"}
+        ],
+        "name": "Donated",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {"indexed": false, "internalType": "uint256", "name": "round", "type": "uint256"}
+        ],
+        "name": "NewRound",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {"internalType": "uint256", "name": "x", "type": "uint256"},
+            {"internalType": "uint256", "name": "y", "type": "uint256"},
+            {
+                "components": [
+                    {"internalType": "address", "name": "token", "type": "address"},
+                    {"internalType": "uint160", "name": "amount", "type": "uint160"},
+                    {"internalType": "uint48", "name": "expiration", "type": "uint48"},
+                    {"internalType": "uint256", "name": "nonce", "type": "uint256"}
+                ],
+                "internalType": "struct IPermit2.PermitTransferFrom",
+                "name": "permit",
+                "type": "tuple"
+            },
+            {
+                "components": [
+                    {"internalType": "address", "name": "to", "type": "address"},
+                    {"internalType": "uint160", "name": "requestedAmount", "type": "uint160"}
+                ],
+                "internalType": "struct IPermit2.SignatureTransferDetails",
+                "name": "transferDetails",
+                "type": "tuple"
+            },
+            {"internalType": "address", "name": "owner", "type": "address"},
+            {"internalType": "bytes", "name": "signature", "type": "bytes"}
+        ],
+        "name": "digWithPermit",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {"internalType": "uint256", "name": "amount", "type": "uint256"}
+        ],
+        "name": "donateToPot",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getExcavatedBitmap",
+        "outputs": [
+            {"internalType": "bytes32[4]", "name": "", "type": "bytes32[4]"}
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getGameState",
+        "outputs": [
+            {
+                "components": [
+                    {"internalType": "uint256", "name": "round", "type": "uint256"},
+                    {"internalType": "uint256", "name": "treasureAmount", "type": "uint256"},
+                    {"internalType": "address", "name": "lastWinner", "type": "address"},
+                    {"internalType": "uint256", "name": "lastWinTimestamp", "type": "uint256"},
+                    {"internalType": "bytes32[4]", "name": "bitmap", "type": "bytes32[4]"}
+                ],
+                "internalType": "struct TreasureHunt.GameState",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "currentRound",
+        "outputs": [
+            {"internalType": "uint256", "name": "", "type": "uint256"}
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "feeReceiver",
+        "outputs": [
+            {"internalType": "address", "name": "", "type": "address"}
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "lastWinTimestamp",
+        "outputs": [
+            {"internalType": "uint256", "name": "", "type": "uint256"}
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "lastWinner",
+        "outputs": [
+            {"internalType": "address", "name": "", "type": "address"}
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "oroToken",
+        "outputs": [
+            {"internalType": "contract IERC20", "name": "", "type": "address"}
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "permit2",
+        "outputs": [
+            {"internalType": "contract IPermit2", "name": "", "type": "address"}
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "totalPot",
+        "outputs": [
+            {"internalType": "uint256", "name": "", "type": "uint256"}
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
 ]
