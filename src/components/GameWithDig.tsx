@@ -32,7 +32,7 @@ export default function GameWithDig() {
       const user = await MiniKit.getUserByUsername(session.user.username);
       const address = user.walletAddress;
       const result = await client.readContract({
-        address: '0x8Ea430CCD2618957630bC7130B2c89a07068AD38',
+        address: '0xe2b81493d6c26e705bc4193a87673db07810f376',
         abi: TreasureHuntABI,
         functionName: 'getGameState',
       }) as any;
@@ -102,7 +102,7 @@ export default function GameWithDig() {
 
       const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
         transaction: [{
-          address: '0x8Ea430CCD2618957630bC7130B2c89a07068AD38',
+          address: '0xe2b81493d6c26e705bc4193a87673db07810f376',
           abi: TreasureHuntABI,
           functionName: 'dig',
           args: [selectedCoords.col, selectedCoords.row],
