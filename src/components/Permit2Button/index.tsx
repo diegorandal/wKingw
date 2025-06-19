@@ -7,7 +7,7 @@ import { MiniKit } from '@worldcoin/minikit-js'
 export const Permit2Button = () => {
 
   const OROaddress = '0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63'; 
-  const myContractToken = '0xe2b81493d6c26e705bc4193a87673db07810f376';
+  const myContractToken = '0xd7c561663751dfd2b11ddce5915ee2b12028f3cd';
 
 const onClickUsePermit2 = async () => {
 
@@ -27,40 +27,38 @@ const transferDetails = {
 };
 
 try {
-  const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
-    transaction: [
-      {
-        address: transferDetails.to, // Dirección de mycontract
-        abi: TreasureHunt_ABI, // ABI del contrato mycontract (debes importarlo o definirlo)
-        functionName: 'dig',
-        args: [7, 7], // Llamada a la función dig(1,1)
-      },
-      {
-        address: "0xF0882554ee924278806d708396F1a7975b732522", // Dirección de Permit2
-        abi: Permit2_ABI, // ABI de Permit2 (debes importarlo)
-        functionName: 'signatureTransfer',
-        args: [
-          [
-            [
-              permitTransfer.permitted.token,
-              permitTransfer.permitted.amount,
-            ],
-            permitTransfer.nonce,
-            permitTransfer.deadline,
-          ],
-          [transferDetails.to, transferDetails.requestedAmount],
-          'PERMIT2_SIGNATURE_PLACEHOLDER_0', // El placeholder será reemplazado por la firma
-        ],
-      },
-    ],
-    permit2: [
-      {
-        ...permitTransfer,
-        spender: transferDetails.to, // El contrato mycontract es el spender
-      },
-    ],
-  });
   
+      const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
+      transaction: [
+        {
+          address: myContractToken,
+          abi: TreasureHunt_ABI,
+          functionName: 'dig',
+          args: [
+            7,
+            7,
+            [
+              [
+                permitTransfer.permitted.token,
+                permitTransfer.permitted.amount,
+              ],
+              permitTransfer.nonce,
+              permitTransfer.deadline,
+            ],
+            [myContractToken, permitTransfer.permitted.amount],
+            'PERMIT2_SIGNATURE_PLACEHOLDER_0',
+          ],
+        },
+      ],
+      permit2: [
+        {
+          ...permitTransfer,
+          spender: myContractToken, 
+        },
+      ],
+    });
+
+
   console.log("Transacción enviada:", finalPayload);
 
 } catch (error) {
